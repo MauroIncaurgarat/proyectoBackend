@@ -56,10 +56,23 @@ router.get('/:pId', async (req, res)=>{
 })
 
 // PUT 
-router.post('/', async(req,res)=>{
+router.post('/',(req,res)=>{
+    const newProduct = req.body 
+    try{   
+        
+        if((Object.keys(newProduct)).length < 6) {     
+            res.status(404).json("Ups, falta un parametro")
+            return
+        }  
+        
+        productManager.addProduct(newProduct.title, newProduct.description, +newProduct.price, newProduct.thumbnail, newProduct.code, +newProduct.stock )
+        res.end('producto enviado')
+    }
+    catch(err){
 
-    console.log(req.body)
-    res.end('producto enviado')
+        res.status(404).json({Error: err})
+
+    }
 })
 
 

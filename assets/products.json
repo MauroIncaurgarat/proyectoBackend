@@ -43,5 +43,15 @@
 		"code": "ddd4",
 		"stock": 25,
 		"id": 5
+	},
+	{
+		"title": "Vaso",
+		"description": "Vaso Termico",
+		"code": "5435das",
+		"price": 1500,
+		"status": true,
+		"stock": 100,
+		"thumbnail": "10",
+		"id": 8
 	}
 ]
