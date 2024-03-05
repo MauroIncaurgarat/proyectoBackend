@@ -32,10 +32,11 @@ class ProductManager {
         const Product = {
             title : title.trim(),  
             description : description.trim(),
-            price,
-            thumbnail : thumbnail.trim(),
             code : code.trim(),
-            stock 
+            price,
+            status : true ,
+            stock ,
+            thumbnail : thumbnail.trim()
         }
                             //VALIDACIONES 
 
@@ -77,8 +78,9 @@ class ProductManager {
         
         //Actualizo base de datos por si hubo un Update
         await this.readProductFromFile()
+
         //Busco el producto
-        const ProductId = this.#productos.find(Prod => Prod.id === IdProduct)
+        const ProductId = await this.#productos.find(Prod => Prod.id === IdProduct)
 
         if(ProductId === undefined){
             console.log("Invalid Id")
