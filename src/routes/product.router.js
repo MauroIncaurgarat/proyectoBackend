@@ -9,6 +9,8 @@ const filename = (`${__dirname}/../../assets/products.json`)
 const fileId = (`${__dirname}/../../assets/LastId.json`)
 const productManager = new ProductManager(filename,fileId) 
 
+
+
 //INICIAR
 productManager.initialize()
 
@@ -98,7 +100,25 @@ router.put('/:pId',async (req,res)=>{
     }
 })
 
+//DELETE
+router.delete('/:pId', async(req,res)=>{
 
+    try { 
+        const productId = await productManager.getProductById(+req.params.pId)  
+        //Que exista el producto
+        if(!productId){
+            res.status(404).json({Error: 'No existe Id' })
+            return
+        }
+
+        productManager.deletProductFile(+req.params.pId)
+        res.status(200).json(`Producto ${+req.params.pId} Eliminado !`)
+
+    }catch(err){
+        res.status(404).json({Error: err})
+    }
+    
+})
 
 module.exports = router
 /*
