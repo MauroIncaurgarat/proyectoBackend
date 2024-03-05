@@ -55,8 +55,10 @@ router.get('/:pId', async (req, res)=>{
     }
 })
 
-// PUT 
+
+// POST 
 router.post('/',(req,res)=>{
+    /*No puedo validar number and stock*/
     const newProduct = req.body 
     try{   
         
@@ -66,33 +68,37 @@ router.post('/',(req,res)=>{
         }  
         
         productManager.addProduct(newProduct.title, newProduct.description, +newProduct.price, newProduct.thumbnail, newProduct.code, +newProduct.stock )
-        res.end('producto enviado')
+        res.status(200).end('Producto enviado')
     }
     catch(err){
-
         res.status(404).json({Error: err})
-
     }
+})
+
+// PUT
+router.put('/:pId',(req,res)=>{
+
+    try { 
+        const id = +req.params.pId
+        const productUpDate = req.body
+        productManager.upDateProduct(productUpDate, id)
+        
+        res.status(200).json('Producto Actualizado !')
+    }catch(err){
+        res.status(404).json({Error: err})
+    }
+
 })
 
 
 
 module.exports = router
-
 /*
-    Ruta POST --> Deberá agregar nuevo producto con los campos 
-                  >>id: Number/String. Nunca deben repetirse
-                    title: String
-                    decription: String
-                    code: String
-                    price: title
-                    Status: Boolean (True por defecto)
-                    stock: Number
-                    Category: String
-                    Thumbnails: Arrat de string que contenga rutas de imagenes alamcenadas (No Obligatorio)
 
     Ruta PUT /:pid tomar un producto y actualizarlo de con los campos enviados desde el body.
                 Ojo ID
+
+
     Ruta DELETE /:pid deberá eliminar el producti pid indicado
     
 */

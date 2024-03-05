@@ -131,13 +131,18 @@ class ProductManager {
         await this.upDateFile()
     }
     //Actualizar datos de producto
-    async upDateProduct(ProductData){
+    async upDateProduct(ProductData, id){
 
         try { 
             await this.readProductFromFile()
             //Busco el producto
-            const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === ProductData.id)
+            const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
             
+            if(ProductIndexUpDate<0){
+              
+                return console.log('No existe el producto')
+            }
+
             //actualizar los datos de ese producto en el array
             const ProductDataRefresh = {...this.#productos[ProductIndexUpDate], ...ProductData}
             this.#productos[ProductIndexUpDate] = ProductDataRefresh
