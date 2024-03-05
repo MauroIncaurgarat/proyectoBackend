@@ -63,7 +63,7 @@ router.post('/',(req,res)=>{
     try{   
         const newProduct = req.body 
         if((Object.keys(newProduct)).length < 6) {     
-            res.status(404).json("Ups, falta un parametro")
+            res.status(404).json("Ups, faltan parametros")
             return
         }  
         
@@ -88,7 +88,7 @@ router.put('/:pId',async (req,res)=>{
         
         //Si mandan el code del producto debe coincidir
         if(req.body.code && productId.code !== req.body.code){
-            res.status(406).json({Error: 'Code incorrect' })
+            res.status(406).json({Error: 'non-modifiable code' })
             return
         }
 
