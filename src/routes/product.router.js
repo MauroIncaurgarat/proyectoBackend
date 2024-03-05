@@ -55,7 +55,6 @@ router.get('/:pId', async (req, res)=>{
     }
 })
 
-
 // POST 
 router.post('/',(req,res)=>{
     /*No puedo validar number and stock*/
@@ -76,18 +75,21 @@ router.post('/',(req,res)=>{
 })
 
 // PUT
-router.put('/:pId',(req,res)=>{
-
+router.put('/:pId',async (req,res)=>{
     try { 
-        const id = +req.params.pId
-        const productUpDate = req.body
-        productManager.upDateProduct(productUpDate, id)
-        
+        const productId = await productManager.getProductById(+req.params.pId)
+    
+        if(!productId){
+            res.status(404).json({Error: 'No existe Id' })
+            return
+        }
+
+        productManager.upDateProduct(req.body , +req.params.pId)
         res.status(200).json('Producto Actualizado !')
+
     }catch(err){
         res.status(404).json({Error: err})
     }
-
 })
 
 
