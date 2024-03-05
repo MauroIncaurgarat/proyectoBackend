@@ -6,27 +6,26 @@ class ProductManager {
     #pathProducts
     #pathId
     
-    
     constructor(filename, fileId) {
         this.#productos=[]
         this.#pathProducts = filename
         this.#pathId = fileId 
     }
-    
+    //Leer la memoria al iniciar
     async initialize(){
         this.#productos = await this.readProductFromFile()
     }
-    
+    //Obtener Productos
     async getProduct(){
         return await this.readProductFromFile()
     }
-
+    //Obtener Nuevo ID
     async getNewId(){    
         const NewId =  await this.readIdFromFile() + 1
         await this.upDateFileId(NewId)
         return NewId
     }
-
+    //Agregaro Productos
     async addProduct(title, description, price , thumbnail, code, stock=0) {
         
         const Product = {
@@ -39,7 +38,6 @@ class ProductManager {
             thumbnail : thumbnail.trim()
         }
                             //VALIDACIONES 
-
         //Empty Check
         const indiceVacio = Object.values(Product).indexOf('')
         if(indiceVacio>=0){      
@@ -73,7 +71,7 @@ class ProductManager {
         await this.upDateFile()
  
     }
- 
+    //Mostrar Productos por ID
     async getProductById(IdProduct){
         
         //Actualizo base de datos por si hubo un Update
@@ -89,7 +87,6 @@ class ProductManager {
         
         return ProductId
     }
-    
     //Leer Archivo Productos
     async readProductFromFile(){
         try { 
@@ -146,8 +143,6 @@ class ProductManager {
             return 
         }
     }
-
-    //ID
     //Leer Ultimo ID
     async readIdFromFile(){
         try { 
@@ -164,11 +159,12 @@ class ProductManager {
     }
     //Actualizar base de datos ID
     async upDateFileId (NewId){
+       
         try { 
             await fs.promises.writeFile(this.#pathId, JSON.stringify(NewId, null,'\t'))
         }catch{
-            console.log('Error al subir archivo Id')
-            return
+            
+            return console.log('Error al subir archivo Id')
         }
     }
 }

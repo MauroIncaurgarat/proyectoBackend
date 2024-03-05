@@ -58,9 +58,8 @@ router.get('/:pId', async (req, res)=>{
 // POST 
 router.post('/',(req,res)=>{
     /*No puedo validar number and stock*/
-    const newProduct = req.body 
     try{   
-        
+        const newProduct = req.body 
         if((Object.keys(newProduct)).length < 6) {     
             res.status(404).json("Ups, falta un parametro")
             return
@@ -78,9 +77,16 @@ router.post('/',(req,res)=>{
 router.put('/:pId',async (req,res)=>{
     try { 
         const productId = await productManager.getProductById(+req.params.pId)
-    
+        
+        //Que exista el producto
         if(!productId){
             res.status(404).json({Error: 'No existe Id' })
+            return
+        }
+        
+        //Si mandan el code del producto debe coincidir
+        if(req.body.code && productId.code !== req.body.code){
+            res.status(406).json({Error: 'Code incorrect' })
             return
         }
 
