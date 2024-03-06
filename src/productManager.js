@@ -1,8 +1,12 @@
 const { error } = require('console')
+
 const fs = require('fs')
 
 class ProductManager { 
-   
+    //Leer la memoria al iniciar
+    async initialize(){
+        this.#productos = await this.readProductFromFile()
+    }
     #productos
     #pathProducts
     #pathId
@@ -12,20 +16,27 @@ class ProductManager {
         this.#pathProducts = filename
         this.#pathId = fileId 
     }
-    //Leer la memoria al iniciar
-    async initialize(){
-        this.#productos = await this.readProductFromFile()
-    }
+    
     //Obtener Productos
     async getProduct(){
         return await this.readProductFromFile()
     }
-    //Obtener Nuevo ID
-    async getNewId(){    
-        const NewId =  await this.readIdFromFile() + 1
-        await this.upDateFileId(NewId)
-        return NewId
+    //Obtener Productos por ID
+    async getProductById(IdProduct){
+        
+        //Actualizo base de datos por si hubo un Update
+        await this.readProductFromFile()
+
+        //Busco el producto
+        const ProductId = await this.#productos.find(Prod => Prod.id === IdProduct)
+
+        if(!ProductId){
+            throw new Error("Invalid ID")
+        }
+        
+        return ProductId
     }
+
     //Agregaro Productos
     async addProduct(title, description, price , thumbnail, code, stock=0) {
          
@@ -76,42 +87,22 @@ class ProductManager {
         await this.upDateFile()
     
     }
-    //Mostrar Productos por ID
-    async getProductById(IdProduct){
+    //Actualizar producto
+    async upDateProduct(ProductData, id){
         
-        //Actualizo base de datos por si hubo un Update
         await this.readProductFromFile()
-
         //Busco el producto
-        const ProductId = await this.#productos.find(Prod => Prod.id === IdProduct)
-
-        if(!ProductId){
-            throw new Error("Invalid ID")
-        }
+        const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
         
-        return ProductId
-    }
-    //Leer Archivo Productos
-    async readProductFromFile(){
-        try { 
-            //Leear mi archivo, guardarlo y pasarlo a objeto nuevamente
-            const productsContent = await fs.promises.readFile(this.#pathProducts,'utf-8')
-            return JSON.parse(productsContent)
-        }
-        catch {
-            //Si no hay nada en memoria que me devuleva un string vacio
-            return []
+        if(ProductData.code && ProductData.code != this.#productos[ProductIndexUpDate].code){
+            throw new Error ('Code Repeat')
         }
 
-    }
-    //Actualizar base de datos productos
-    async upDateFile (){
-        try { 
-            await fs.promises.writeFile(this.#pathProducts, JSON.stringify(this.#productos, null,'\t'))
-        }catch{
-            console.log('Error al actualizar el archivo Prductos')
-            return
-        }
+        //actualizar los datos de ese producto en el array
+        const ProductDataRefresh = {...this.#productos[ProductIndexUpDate], ...ProductData}
+        this.#productos[ProductIndexUpDate] = ProductDataRefresh
+
+        await this.upDateFile()
     }
     //Eliminar Productos
     async deletProductFile(idRemove){
@@ -130,24 +121,37 @@ class ProductManager {
         
         await this.upDateFile()
     }
-    //Actualizar datos de producto
-    async upDateProduct(ProductData, id){
-        
-        await this.readProductFromFile()
-        //Busco el producto
-        const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
-        
-        if(ProductData.code && ProductData.code != this.#productos[ProductIndexUpDate].code){
-            throw new Error ('Code Repeat')
+
+    //Leer Archivo Productos
+    async readProductFromFile(){
+        try { 
+            //Leear mi archivo, guardarlo y pasarlo a objeto nuevamente
+            const productsContent = await fs.promises.readFile(this.#pathProducts,'utf-8')
+            return JSON.parse(productsContent)
+        }
+        catch {
+            //Si no hay nada en memoria que me devuleva un string vacio
+            return []
         }
 
-        //actualizar los datos de ese producto en el array
-        const ProductDataRefresh = {...this.#productos[ProductIndexUpDate], ...ProductData}
-        this.#productos[ProductIndexUpDate] = ProductDataRefresh
-
-        await this.upDateFile()
     }
+    //Actualizar Archivo productos
+    async upDateFile (){
+        try { 
+            await fs.promises.writeFile(this.#pathProducts, JSON.stringify(this.#productos, null,'\t'))
+        }catch{
+            throw new Error ('Error al actualizar el archivo Prductos')
+            
+        }
+    }
+
     
+    //Obtener Nuevo ID
+    async getNewId(){    
+        const NewId =  await this.readIdFromFile() + 1
+        await this.upDateFileId(NewId)
+        return NewId
+    }
     //Leer Ultimo ID
     async readIdFromFile(){
         try { 
@@ -169,7 +173,7 @@ class ProductManager {
             await fs.promises.writeFile(this.#pathId, JSON.stringify(NewId, null,'\t'))
         }catch{
             
-            return console.log('Error al subir archivo Id')
+            throw new Error ('Error al subir archivo Id')
         }
     }
 }

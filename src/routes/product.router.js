@@ -9,8 +9,6 @@ const filename = (`${__dirname}/../../assets/products.json`)
 const fileId = (`${__dirname}/../../assets/LastId.json`)
 const productManager = new ProductManager(filename,fileId) 
 
-
-
 //INICIAR
 productManager.initialize()
 
@@ -90,12 +88,4 @@ router.delete('/:pId', async(req,res)=>{
 })
 
 module.exports = router
-/*
 
-    Ruta PUT /:pid tomar un producto y actualizarlo de con los campos enviados desde el body.
-                Ojo ID
-
-
-    Ruta DELETE /:pid deberá eliminar el producti pid indicado
-    
-*/
