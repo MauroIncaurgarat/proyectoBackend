@@ -20,7 +20,6 @@ router.get('/', async (req, res)=>{
         const newlimit = +req.query.limit
         const products = await productManager.readProductFromFile()     
         const element = products.length
-        console.log(newlimit)
         
         if(newlimit)
             newlimit <= element && newlimit > 0
@@ -43,81 +42,51 @@ router.get('/', async (req, res)=>{
 router.get('/:pId', async (req, res)=>{
    
     try{    
-        const productId = await productManager.getProductById(+req.params.pId)
-        
-        if(!productId){
-            res.status(404).json({Error: 'No existe Id' })
-            return
-        }
-
-        return res.status(200).json(productId)
+        const ProductId = await productManager.getProductById(+req.params.pId)
+        return res.status(200).json(ProductId)
 
     }catch(err){   
-        res.status(404).json({error: err})    
+        res.status(404).json({error: err.message})    
     }
 })
 
 // POST 
-router.post('/',(req,res)=>{
+router.post('/',async (req,res)=>{
     /*No puedo validar number and stock*/
     try{   
-        const newProduct = req.body 
-        if((Object.keys(newProduct)).length < 6) {     
-            res.status(404).json("Ups, faltan parametros")
-            return
-        }  
+        //Ejecutar Add Product
+        await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
         
-        productManager.addProduct(newProduct.title, newProduct.description, +newProduct.price, newProduct.thumbnail, newProduct.code, +newProduct.stock )
-        res.status(200).end('Producto enviado')
+        res.status(200).json('Producto enviado')
     }
     catch(err){
-        res.status(404).json({Error: err})
+        res.status(400).json({Error: err.message})
     }
 })
 
 // PUT
 router.put('/:pId',async (req,res)=>{
     try { 
-        const productId = await productManager.getProductById(+req.params.pId)
+        await productManager.getProductById(+req.params.pId)
         
-        //Que exista el producto
-        if(!productId){
-            res.status(404).json({Error: 'No existe Id' })
-            return
-        }
-        
-        //Si mandan el code del producto debe coincidir
-        if(req.body.code && productId.code !== req.body.code){
-            res.status(406).json({Error: 'non-modifiable code' })
-            return
-        }
+        await productManager.upDateProduct(req.body,+req.params.pId)
 
-        productManager.upDateProduct(req.body , +req.params.pId)
         res.status(200).json('Producto Actualizado !')
 
     }catch(err){
-        res.status(404).json({Error: err})
+        res.status(404).json({Error: err.message})
     }
 })
 
 //DELETE
 router.delete('/:pId', async(req,res)=>{
-
-    try { 
-        const productId = await productManager.getProductById(+req.params.pId)  
-        //Que exista el producto
-        if(!productId){
-            res.status(404).json({Error: 'No existe Id' })
-            return
-        }
-
-        productManager.deletProductFile(+req.params.pId)
+    try {   
+        await productManager.deletProductFile(+req.params.pId)
         res.status(200).json(`Producto ${+req.params.pId} Eliminado !`)
 
     }catch(err){
-        res.status(404).json({Error: err})
-    }
-    
+        res.status(404).json({Error: err.message})
+    }  
 })
 
 module.exports = router

@@ -1,3 +1,4 @@
+const { error } = require('console')
 const fs = require('fs')
 
 class ProductManager { 
@@ -27,7 +28,12 @@ class ProductManager {
     }
     //Agregaro Productos
     async addProduct(title, description, price , thumbnail, code, stock=0) {
-        
+         
+        //Falto un campo
+        if(!title || !description || !price  || !thumbnail || !code || !stock){       
+            throw new Error( `Falta un Campo`)
+        }
+
         const Product = {
             title : title.trim(),  
             description : description.trim(),
@@ -40,23 +46,22 @@ class ProductManager {
                             //VALIDACIONES 
         //Empty Check
         const indiceVacio = Object.values(Product).indexOf('')
-        if(indiceVacio>=0){      
-            console.error( `${Object.keys(Product)[indiceVacio]} is Empty  `)
-            return 
+        if(indiceVacio>=0){             
+            throw new Error( `${Object.keys(Product)[indiceVacio]} is Empty  `)
         }
-        //No ingresar strings en Precio y Stock
-        if("number" != typeof(Product.price)) {
-            console.error("Error: Price must be a number")
-            return
-            }else if("number" != typeof(Product.stock)){
-            console.error("Error: Stock must be a number")
-            return
+        //Number Check
+        if(isNaN(Product.price)) {
+            
+            throw new Error("Price must be a number")
+            
+        }else if(isNaN(Product.stock)){
+           
+            throw new Error("Stock must be a number")
         }
-        //No se Repita Code
+        //Check Code
         const MemoryProductCode = this.#productos.find(element => element.code == Product.code)
         if(MemoryProductCode){
-            console.error("Error: Code Repeat")
-            return
+            throw new Error("Error: Code Repeat")      
         }
 
         //Imprimo ID
@@ -69,7 +74,7 @@ class ProductManager {
         this.#productos.push(FinalProduct)   
         
         await this.upDateFile()
- 
+    
     }
     //Mostrar Productos por ID
     async getProductById(IdProduct){
@@ -80,9 +85,8 @@ class ProductManager {
         //Busco el producto
         const ProductId = await this.#productos.find(Prod => Prod.id === IdProduct)
 
-        if(ProductId === undefined){
-            console.log("Invalid Id")
-            return
+        if(!ProductId){
+            throw new Error("Invalid ID")
         }
         
         return ProductId
@@ -118,8 +122,7 @@ class ProductManager {
         const ProductIndexId = this.#productos.findIndex(Prod => Prod.id === idRemove)
 
         if(ProductIndexId<0){
-            console.log("No existe Id")
-            return
+            throw new Error ("No existe Id")
         }
 
         //eliminar
@@ -129,20 +132,22 @@ class ProductManager {
     }
     //Actualizar datos de producto
     async upDateProduct(ProductData, id){
-        try { 
-            await this.readProductFromFile()
-            //Busco el producto
-            const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
-            //actualizar los datos de ese producto en el array
-            const ProductDataRefresh = {...this.#productos[ProductIndexUpDate], ...ProductData}
-            this.#productos[ProductIndexUpDate] = ProductDataRefresh
-
-            await this.upDateFile()
-        }catch{
-            console.log('Error al Actualizar')
-            return 
+        
+        await this.readProductFromFile()
+        //Busco el producto
+        const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
+        
+        if(ProductData.code && ProductData.code != this.#productos[ProductIndexUpDate].code){
+            throw new Error ('Code Repeat')
         }
+
+        //actualizar los datos de ese producto en el array
+        const ProductDataRefresh = {...this.#productos[ProductIndexUpDate], ...ProductData}
+        this.#productos[ProductIndexUpDate] = ProductDataRefresh
+
+        await this.upDateFile()
     }
+    
     //Leer Ultimo ID
     async readIdFromFile(){
         try { 
