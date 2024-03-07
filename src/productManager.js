@@ -95,7 +95,7 @@ class ProductManager {
         const ProductIndexUpDate = this.#productos.findIndex(Prod => Prod.id === id)
         
         if(ProductData.code && ProductData.code != this.#productos[ProductIndexUpDate].code){
-            throw new Error ('Code Repeat')
+            throw new Error ('Cant modify code')
         }
 
         //actualizar los datos de ese producto en el array

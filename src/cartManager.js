@@ -28,8 +28,7 @@ class CartManager{
 
         await this.upDateCartFile()
     }
-
-
+    
     async readCartFromFile(){
         try { 
             //Leear mi archivo, guardarlo y pasarlo a objeto nuevamente
@@ -64,7 +63,6 @@ class CartManager{
         return cartId
     }
 
-
     async addProductToCart(ProductId, CartId){
 
       
@@ -92,7 +90,6 @@ class CartManager{
         this.upDateCartFile()
         return
      }
-
 
     async readIdFromFile(){
         try { 
@@ -123,7 +120,6 @@ class CartManager{
         await this.upDateFileId(NewId)
         return NewId
     }
-
 
 }
 

@@ -1,38 +1,42 @@
 [
-	{	
-		"title": "Nuevo Titulo 10",
-		"description": "Nueva Descripcion 10",
-		"price": "10000",
-		"thumbnail": "Nueva Direccion",
-		"code": "hfudisq",
+	{
+		"title": "Coca Cola",
+		"description": "Con Azucar",
+		"price": "2000",
+		"status": true,
+		"thumbnail": "http://imgcocacolaregular.com.ar",
+		"code": "aaa111",
 		"stock": "200",
 		"id": 1
 	},
 	{
-		"title": "Vaso termico 180",
-		"description": "Vaso apto para calor",
-		"price": "2000",
-		"thumbnail": "http://img180cristal.com.ar",
-		"code": "342tre",
-		"stock": "200",
+		"title": "Coca Cola ZERO",
+		"description": "Sin azucar",
+		"price": "2100",
+		"status": true,
+		"thumbnail": "http://imgcocacolazero.com.ar",
+		"code": "abb123",
+		"stock": "100",
 		"id": 2
 	},
 	{
-		"title": "Vaso Cristal 110",
-		"description": "Vaso transparente",
-		"price": "2000",
-		"thumbnail": "http://img180cristal.com.ar",
-		"code": "458avds",
-		"stock": "200",
+		"title": "Fanta",
+		"description": "Con Azucar",
+		"price": "1850",
+		"status": true,
+		"thumbnail": "http://imgfanta.com.ar",
+		"code": "abe779",
+		"stock": "50",
 		"id": 3
 	},
 	{
-		"title": "Vaso Cristal 220",
-		"description": "Vaso Transparente",
+		"title": "SevenUp zero",
+		"description": "Sin azucar",
 		"price": "2000",
-		"thumbnail": "http://img180cristal.com.ar",
-		"code": "7849deea",
-		"stock": "200",
+		"status": true,
+		"thumbnail": "http://imgsevenup.com.ar",
+		"code": "rrt788",
+		"stock": "300",
 		"id": 4
 	}
 ]

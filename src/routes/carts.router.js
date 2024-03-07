@@ -48,11 +48,8 @@ router.post('/:cId/product/:pId', async (req,res)=>{
         //Busco el Carro y verifico existencia Carro ID
         const CartId = await cartManager.getCartById(+req.params.cId)
         
-
-
         //Agrego el Producto al Carro
         cartManager.addProductToCart(ProductId, CartId)
-
 
         return res.status(200).json('Agregado con exito')
 
