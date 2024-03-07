@@ -22,7 +22,7 @@ class CartManager{
 
         const cart = {
             id: await this.getNewCartId(),
-            product:[],
+            products:[],
         }
         this.#carts.push(cart)
 
@@ -58,13 +58,40 @@ class CartManager{
         const cartId = await this.#carts.find(Cart => Cart.id === IdCart)
        
         if(!cartId){
-            throw new Error("Invalid ID")
+            throw new Error("Invalid Cart ID")
         }
         
         return cartId
     }
 
 
+    async addProductToCart(ProductId, CartId){
+
+      
+        await this.readCartFromFile()
+        //contador
+        let myquantity = 1
+        //Busco el indice del Carro
+        const CartIndexUpDate = this.#carts.findIndex(Param => Param.id === CartId.id) 
+        //Existe el producto ? 
+        const ProductIndexUpDate = this.#carts[CartIndexUpDate].products.findIndex(Param => Param.product === ProductId.id)
+
+        //Si existe lo elimino para sobreescribir
+        if(ProductIndexUpDate>=0){         
+            myquantity  = this.#carts[CartIndexUpDate].products[ProductIndexUpDate].quantity + 1
+            this.#carts[CartIndexUpDate].products.splice([ProductIndexUpDate],1)         
+        }
+        
+        const NewProductCart = {product: ProductId.id, quantity : myquantity}
+        const newCartElement = CartId.products.push(NewProductCart)
+
+        //actualizar los datos de ese producto en el array
+        const ProductDataRefresh = {...this.#carts[CartIndexUpDate], ...newCartElement}
+        this.#carts[CartIndexUpDate] = ProductDataRefresh
+        
+        this.upDateCartFile()
+        return
+     }
 
 
     async readIdFromFile(){
