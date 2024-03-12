@@ -1,0 +1,17 @@
+<h1>{{pageTitle}}</h1>
+
+<div class="conteiner"> 
+    {{#each products}}
+   <ul>
+        <li>Producto: {{title}}
+            <ul>
+                <li>Code: {{code}}</li>
+                <li>Descripion: {{description}}</li>
+                <li>Precio: {{price}}</li>
+                <li>Stock: {{stock}}</li>
+                <li>Id: {{id}}</li>
+            </ul>
+        </li>
+    </ul>
+    {{/each}}
+<div>
