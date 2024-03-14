@@ -76,10 +76,14 @@ router.post('/realTimeProducts', async(req,res)=>{
     console.log(req.body)
     //Agregar al product manager
     try{   
-        //Ejecutar Add Product
+        await productManager.initialize()
+        // 1 => Agregar en el product manager
         await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
         
-        res.status(200).json('Producto enviado')
+        // 2 => Notificar a los clientes (browser) mediante wqebsocket que se agrego un producto nuevo
+        req.app.get('ws').emit('newProduct', req.body)
+
+        res.status(200).json(req.body)
     }
     catch(err){
         res.status(400).json({Error: err.message})
