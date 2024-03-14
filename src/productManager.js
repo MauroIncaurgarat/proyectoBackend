@@ -111,7 +111,7 @@ class ProductManager {
         await this.readProductFromFile()
         //Busco el producto
         const ProductIndexId = this.#productos.findIndex(Prod => Prod.id === idRemove)
-
+        console.log(ProductIndexId)
         if(ProductIndexId<0){
             throw new Error ("No existe Id")
         }

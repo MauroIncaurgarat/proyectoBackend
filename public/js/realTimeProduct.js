@@ -10,16 +10,22 @@ socket.on('newProduct',(product)=>{
     const conteiner = document.getElementById('productFeed')
     
     conteiner.innerHTML += ` 
-    
-        <ul>
+        <div${product.id}>
             <li>Producto: ${product.title}
                 <ul>
                     <li>Code: ${product.code}</li>
                     <li>Descripion: ${product.description}</li>
                     <li>Precio: ${product.price}</li>
                     <li>Stock: ${product.stock}</li>
+                    <li>Id: ${product.id}</li>
                 </ul>
             </li>
-        </ul>
+        </div>
     `
+})
+
+socket.on('deleteProduct', (deleteProductId)=>{
+    const ulProduct = document.getElementById(deleteProductId)
+    ulProduct.remove()
+
 })

@@ -73,16 +73,31 @@ router.get('/realTimeProducts', async(__,res)=>{
 
 router.post('/realTimeProducts', async(req,res)=>{
 
-    console.log(req.body)
-    //Agregar al product manager
+    
+    await productManager.initialize()
     try{   
-        await productManager.initialize()
-        // 1 => Agregar en el product manager
-        await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
-        
-        // 2 => Notificar a los clientes (browser) mediante wqebsocket que se agrego un producto nuevo
-        req.app.get('ws').emit('newProduct', req.body)
+        if(!req.body.deleteId){ 
+            
+            
+            // 1 => Agregar en el product manager
+            await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
+            
+            //Necesito tener el elemento agregado con el ID para identificar luego en html
+            const productArray = await productManager.getProduct()
+            const ultimaPosicion = productArray.length - 1
+            const lastProduct = productArray[ultimaPosicion]
 
+            // 2 => Notificar a los clientes (browser) mediante wqebsocket que se agrego un producto nuevo
+            req.app.get('ws').emit('newProduct', lastProduct)
+        }
+        if(req.body.deleteId){
+
+            console.log(+req.body.deleteId)
+            await productManager.deletProductFile(+req.body.deleteId)
+             //Notificar a los clientes (browser) mediante wqebsocket que se elimino un producto nuevo
+            req.app.get('ws').emit('deleteProduct', req.body.deleteId)
+        }
+    
         res.status(200).json(req.body)
     }
     catch(err){
