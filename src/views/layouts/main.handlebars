@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IR=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <title>{{pageTitle}}</title>
 </head>
 <body>
-
-    {{{body}}}
     
+    {{{body}}}
+    {{!-- Incluir Socket.io si es necesario --}}
+
+    {{!-- Incluir Web Socket si es necesario--}}
+    {{#if useWS}}
+        <script src="/socket.io/socket.io.js"></script>
+    {{/if}}
+
+    {{!-- Incluir scripts de esta vista en particular--}}
+    {{#each scripts}}
+        <script src="/js/{{this}}"></script>
+    {{/each}}
 </body>
 </html>
