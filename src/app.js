@@ -4,6 +4,10 @@ const viewsRouter = require(`${__dirname}/routes/views.router.js`)
 const { Server } = require('socket.io')
 const handlebars = require('express-handlebars')
 const express = require('express')
+const mongoose = require('mongoose')
+const ProductManager = require(`${__dirname}/dao/dbManager/productManager.js`)
+
+//const ProductManager = require('./dao/dbManager/productManager')
 
 const app = express()
 
@@ -27,22 +31,32 @@ app.use('/', viewsRouter);
 
 
 //SERVIDOR
-//Guardoo el servidor
-const httpServer = app.listen(8080, ()=>{
-    console.log(' Servidor Listo !') })
+const main = async () => { 
+    await mongoose.connect('mongodb://localhost:27017', 
+    {
+        dbName: 'ecommerce'   
+    })
+    
+    const productManager = new ProductManager()
+    await productManager
+    
+    //Guardoo el servidor
+    const httpServer = app.listen(8080, ()=>{
+        console.log(' Servidor Listo !') })
 
     //WEB SERVER
+    //Instancio servidor p WS
+    const io = new Server(httpServer) //por convención
+    
+    //Evento aparece cuando el cliente se conecta
+    io.on('connection',(clientSocket)=>{
+        console.log(`nuevo cliente ${clientSocket.id}`)
+        //Eventos que el servidor debe escuchar
+    })
 
-//Instancio servidor p WS
-const io = new Server(httpServer) //por convención
+    // SET
+    app.set('ws',io)
+    //app.set('productManager',ProductManager )
+}
 
-// Guardo mi WS y puedo utilizarlo
-app.set('ws',io)
-
-//Evento aparece cuando el cliente se conecta
-io.on('connection',(clientSocket)=>{
-    console.log(`nuevo cliente ${clientSocket.id}`)
-    //Eventos que el servidor debe escuchar
-
-
-})
+main()

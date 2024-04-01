@@ -1,16 +1,15 @@
 const {Router} = require('express')
 const router = Router()
 
-const ProductManager = require(`${__dirname}/../productManager.js`)
-const filename = (`${__dirname}/../../assets/products.json`)
-const fileId = (`${__dirname}/../../assets/LastId.json`)
-const productManager = new ProductManager(filename,fileId) 
+const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
+const productManager = new ProductManager() 
 
 
 router.get('/', async(__,res)=>{
 
     try{
         const products = await productManager.getProduct()
+        console.log(products)
         const productData = products.map( product => ({
 
             title: product.title,
@@ -36,7 +35,6 @@ router.get('/', async(__,res)=>{
     }
 
 })
-
 
 router.get('/realTimeProducts', async(__,res)=>{
 
@@ -68,18 +66,12 @@ router.get('/realTimeProducts', async(__,res)=>{
         console.log(err)
         res.status(500).end('Error interno Servidor / Home-Productos')
     }
-})
-   
+})   
 
 router.post('/realTimeProducts', async(req,res)=>{
-
-    
-    await productManager.initialize()
     try{   
-        if(!req.body.deleteId){ 
-            
-            
-            // 1 => Agregar en el product manager
+        if(!req.body.deleteId){          
+           // 1 => Agregar en el product manager
             await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
             
             //Necesito tener el elemento agregado con el ID para identificar luego en html
@@ -92,12 +84,11 @@ router.post('/realTimeProducts', async(req,res)=>{
         }
         if(req.body.deleteId){
 
-            console.log(+req.body.deleteId)
-            await productManager.deletProductFile(+req.body.deleteId)
+            console.log(req.body.deleteId)
+            await productManager.deletProductById(req.body.deleteId)
              //Notificar a los clientes (browser) mediante wqebsocket que se elimino un producto nuevo
             req.app.get('ws').emit('deleteProduct', req.body.deleteId)
         }
-    
         res.status(200).json(req.body)
     }
     catch(err){

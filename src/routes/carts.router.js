@@ -1,22 +1,22 @@
 // api/cart/ 
 const {Router} = require('express')
 const CartManager = require(`${__dirname}/../cartManager.js`)
-const ProductManager = require(`${__dirname}/../productManager.js`)
+const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
 
 const router = Router()
 //Rutas de Carts
 const cartFile = (`${__dirname}/../../assets/carts.json`)
 const cartIdFile = (`${__dirname}/../../assets/lastIdCart.json`)
 //Ruta Productos
-const productFile = (`${__dirname}/../../assets/products.json`)
-const productId = (`${__dirname}/../../assets/LastId.json`)
+//const productFile = (`${__dirname}/../../assets/products.json`)
+//const productId = (`${__dirname}/../../assets/LastId.json`)
 //Creamos instancias
-const productManager = new ProductManager(productFile,productId) 
+const productManager = new ProductManager() 
 const cartManager = new CartManager(cartFile,cartIdFile)
 
 
 cartManager.initialize()
-productManager.initialize()
+
 
 router.post('/', async (_,res)=>{
 
