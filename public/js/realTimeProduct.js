@@ -10,7 +10,7 @@ socket.on('newProduct',(product)=>{
     const conteiner = document.getElementById('productFeed')
     
     conteiner.innerHTML += ` 
-        <div${product.id}>
+        <div id="${product.id}">
             <li>Producto: ${product.title}
                 <ul>
                     <li>Code: ${product.code}</li>

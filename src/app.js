@@ -5,7 +5,6 @@ const { Server } = require('socket.io')
 const handlebars = require('express-handlebars')
 const express = require('express')
 const mongoose = require('mongoose')
-const ProductManager = require(`${__dirname}/dao/dbManager/productManager.js`)
 
 //const ProductManager = require('./dao/dbManager/productManager')
 
@@ -32,14 +31,12 @@ app.use('/', viewsRouter);
 
 //SERVIDOR
 const main = async () => { 
+    //conecto a MONGO ATLAS
     await mongoose.connect('mongodb+srv://mauroincaurgarat:coderpass@codercluster.cr5kfef.mongodb.net/?retryWrites=true&w=majority&appName=CoderCluster', 
     {
         dbName: 'ecommerce'   
     })
-    
-    const productManager = new ProductManager()
-    await productManager
-    
+
     //Guardoo el servidor
     const httpServer = app.listen(8080, ()=>{
         console.log(' Servidor Listo !') })
@@ -56,7 +53,7 @@ const main = async () => {
 
     // SET
     app.set('ws',io)
-    //app.set('productManager',ProductManager )
+  
 }
 
 main()
