@@ -9,8 +9,12 @@
 <body>
     
     {{{body}}}
-    {{!-- Incluir Socket.io si es necesario --}}
-
+    
+   
+    {{#if useSweetAlert}}
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{/if}}
+  
     {{!-- Incluir Web Socket si es necesario--}}
     {{#if useWS}}
         <script src="/socket.io/socket.io.js"></script>

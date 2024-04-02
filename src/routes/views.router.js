@@ -5,6 +5,7 @@ const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`
 const productManager = new ProductManager() 
 
 
+
 router.get('/', async(__,res)=>{
 
     try{
@@ -95,5 +96,18 @@ router.post('/realTimeProducts', async(req,res)=>{
         res.status(400).json({Error: err.message})
     }
 })
+
+router.get('/chat', async(__,res)=>{
+
+    res.render('chat',{
+        pageTitle : 'aplicacion de chat',
+        useWS: true,
+        useSweetAlert: true,
+        scripts: [
+            'chat.js'
+        ]
+    })
+
+})   
 
 module.exports = router

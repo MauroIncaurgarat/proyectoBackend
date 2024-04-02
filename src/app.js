@@ -1,6 +1,12 @@
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
 const viewsRouter = require(`${__dirname}/routes/views.router.js`)
+
+
+const ChatManager = require(`${__dirname}/dao/dbManager/chatManager.js`)
+const chatManager = new ChatManager() 
+
+
 const { Server } = require('socket.io')
 const handlebars = require('express-handlebars')
 const express = require('express')
@@ -44,16 +50,23 @@ const main = async () => {
     //WEB SERVER
     //Instancio servidor p WS
     const io = new Server(httpServer) //por convención
-    
+    // SET
+    app.set('ws',io)
+
+
     //Evento aparece cuando el cliente se conecta
     io.on('connection',(clientSocket)=>{
         console.log(`nuevo cliente ${clientSocket.id}`)
-        //Eventos que el servidor debe escuchar
+
+        clientSocket.on('message', (data)=> {
+            chatManager.addChat(data)
+
+            io.emit('message',data)
+        })
+
     })
 
-    // SET
-    app.set('ws',io)
-  
+    
 }
 
 main()
