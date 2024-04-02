@@ -1,5 +1,5 @@
 const { error } = require('console')
-const ProductModel = require ('../models/product.model')
+const ProductModel = require ('../models/product.model.js')
 
 class ProductManager { 
   
@@ -39,9 +39,8 @@ class ProductManager {
 
     //Obtener Producto ById
     async getProductById(id) {
-        const ProductID = await ProductModel.find({_id : id})
-        console.log(ProductID)
-        return ProductID
+      
+        return await ProductModel.find({_id : id})
     }
 
     //Eliminar Productos por ID

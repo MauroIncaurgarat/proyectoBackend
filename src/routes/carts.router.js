@@ -1,22 +1,11 @@
 // api/cart/ 
 const {Router} = require('express')
-const CartManager = require(`${__dirname}/../cartManager.js`)
-const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
+const CartManager = require(`../dao/dbManager/cartManager`)
+const ProductManager = require(`../dao/dbManager/productManager`)
 
 const router = Router()
-//Rutas de Carts
-const cartFile = (`${__dirname}/../../assets/carts.json`)
-const cartIdFile = (`${__dirname}/../../assets/lastIdCart.json`)
-//Ruta Productos
-//const productFile = (`${__dirname}/../../assets/products.json`)
-//const productId = (`${__dirname}/../../assets/LastId.json`)
-//Creamos instancias
-const productManager = new ProductManager() 
-const cartManager = new CartManager(cartFile,cartIdFile)
-
-
-cartManager.initialize()
-
+const cartManager = new CartManager()
+const productManager = new ProductManager()
 
 router.post('/', async (_,res)=>{
 
@@ -32,7 +21,7 @@ router.post('/', async (_,res)=>{
 router.get('/:cId', async (req, res)=>{
    
     try{       
-        const cartId = await cartManager.getCartById(+req.params.cId)
+        const cartId = await cartManager.getCartById(req.params.cId)
         return res.status(200).json(cartId)
 
     }catch(err){   
@@ -44,12 +33,13 @@ router.post('/:cId/product/:pId', async (req,res)=>{
 
     try{
         //Busco el Producto y verifico existencia Producto ID
-        const ProductId = await productManager.getProductById(+req.params.pId)
+        const ProductId = await productManager.getProductById(req.params.pId)
         //Busco el Carro y verifico existencia Carro ID
-        const CartId = await cartManager.getCartById(+req.params.cId)
-        
+        const CartId = await cartManager.getCartById(req.params.cId)
+
+   
         //Agrego el Producto al Carro
-        cartManager.addProductToCart(ProductId, CartId)
+        await cartManager.addProductToCart(req.params.pId, CartId)
 
         return res.status(200).json('Agregado con exito')
 
