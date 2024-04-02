@@ -32,7 +32,7 @@ app.use('/', viewsRouter);
 
 //SERVIDOR
 const main = async () => { 
-    await mongoose.connect('mongodb://localhost:27017', 
+    await mongoose.connect('mongodb+srv://mauroincaurgarat:coderpass@codercluster.cr5kfef.mongodb.net/?retryWrites=true&w=majority&appName=CoderCluster', 
     {
         dbName: 'ecommerce'   
     })
