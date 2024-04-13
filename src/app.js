@@ -44,28 +44,8 @@ const main = async () => {
     })
 
     //Guardoo el servidor
-    const httpServer = app.listen(8080, ()=>{
+    app.listen(8080, ()=>{
         console.log(' Servidor Listo !') })
-
-    //WEB SERVER
-    //Instancio servidor p WS
-    const io = new Server(httpServer) //por convención
-    // SET
-    app.set('ws',io)
-
-
-    //Evento aparece cuando el cliente se conecta
-    io.on('connection',(clientSocket)=>{
-        console.log(`nuevo cliente ${clientSocket.id}`)
-
-        clientSocket.on('message', (data)=> {
-            chatManager.addChat(data)
-
-            io.emit('message',data)
-        })
-
-    })
-
     
 }
 
