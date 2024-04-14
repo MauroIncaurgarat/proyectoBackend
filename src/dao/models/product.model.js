@@ -21,17 +21,20 @@ const schema = new mongoose.Schema({
     price:{
         type: Number,
         required: true,
-        min: 1
+        min: 1,
+        index: true
     },
 
     status : {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
 
     stock : {
         type: Number,
         required: true,
-        min: 1
+        min: 1,
+        index: true
     },
 
     thumbnail : {

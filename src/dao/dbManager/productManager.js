@@ -4,7 +4,7 @@ const ProductModel = require ('../models/product.model.js')
 class ProductManager {   
     constructor() {}
     
-    //Agregaro Productos
+    //Agregar Productos
     async addProduct(title, description, price , thumbnail, code, stock=0) {
         try{  
             //Number Check
@@ -23,7 +23,6 @@ class ProductManager {
                 description : description.trim(),
                 code : code.trim(),
                 price,
-                status : true ,
                 stock ,
                 thumbnail : thumbnail.trim()
             })
@@ -31,7 +30,6 @@ class ProductManager {
             throw new Error("Error al agregar producto")
         }               
     }
-
     //Leer Productos
     async getProduct(){
         try{ 
@@ -40,18 +38,7 @@ class ProductManager {
         }catch{
             throw new Error("Error al obtener productos")
         }
-    }
-
-    async getPage(pagequery){
-        try { 
-            const page = pagequery || 1
-            const products = await ProductModel.paginate({},{limit: 5, page, lean: true })
-            return products
-        }catch{
-            throw new Error("Found Page Error") 
-        }
-    }
-
+    }   
     //Obtener Producto ById
     async getProductById(id) {
         try{ 
@@ -86,6 +73,93 @@ class ProductManager {
             })
         }catch{
             throw new Error("Error al actualizar")
+        }
+    }
+
+    // Filtro Paginas            
+    async getPage(pagequery){
+        try { 
+            const page = pagequery || 1
+            const products = await ProductModel.paginate({},{limit: 5, page, lean: true })
+
+            let PrevLink
+            let NextLink
+
+            if(products.totalDocs < page || page <= 0 ){
+                res.status(404).json({error: "Page dont Exist"})
+            }
+            
+            if(products.hasPrevPage && products.hasNextPage){      
+                PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
+                NextLink =  "http://localhost:8080/api/product?page=" +products.nextPage 
+     
+            }else if (!products.hasPrevPage && products.hasNextPage){
+                PrevLink = null
+                NextLink =  "http://localhost:8080/api/product?page=" +products.nextPage
+            }else{
+                PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
+                NextLink =  null
+            }
+
+            const productPage = {
+                status: "succes",
+                payload: products.docs,
+                totalPage: products.totalPages,
+                prevPage: products.prevPage,
+                nextPage: products.nextPage,
+                page: products.page,
+                hasPrevPage: products.hasPrevPage,
+                hasNextPage: products.hasNextPage,
+                prevLink: PrevLink,
+                nextLink: NextLink
+            }
+
+            return productPage
+        }catch{
+            throw new Error("Found Page Error") 
+        }
+    }
+    // Filtro Precio
+    async priceFilter(order){   
+        try{ 
+            if (order == "asc"){
+                const result = await ProductModel.aggregate([ 
+                    {$sort: {price: 1 }}
+                ])         
+                return result
+            }
+            if (order == "desc"){
+                const result = await ProductModel.aggregate([ 
+                    {$sort: {price: -1 }}
+                ])        
+                return result
+            }
+        }catch(err){
+             throw new Error("No funciona filtro")
+        }
+    }
+    // Filtro Stock
+    async stockFilter(param){   
+        try{  
+            if(param==1){ 
+                const result = await ProductModel.aggregate([ 
+                    {
+                        $match: {stock: { $gt:0}}
+                    }
+                ]) 
+                return result        
+            }
+            if(param==0){
+                const result = await ProductModel.aggregate([ 
+                    {
+                        $match: {stock: { $eq:0}}
+                    }
+                ]) 
+                return result
+            }
+          
+        }catch(err){
+             throw new Error("No funciona filtro")
         }
     }
 }
