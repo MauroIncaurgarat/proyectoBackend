@@ -42,6 +42,16 @@ class ProductManager {
         }
     }
 
+    async getPage(pagequery){
+        try { 
+            const page = pagequery || 1
+            const products = await ProductModel.paginate({},{limit: 5, page, lean: true })
+            return products
+        }catch{
+            throw new Error("Found Page Error") 
+        }
+    }
+
     //Obtener Producto ById
     async getProductById(id) {
         try{ 
