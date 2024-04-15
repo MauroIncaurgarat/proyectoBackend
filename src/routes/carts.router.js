@@ -50,5 +50,66 @@ router.post('/:cId/product/:pId', async (req,res)=>{
 
 })
 
+router.delete('/:cId/product/:pId', async (req,res)=>{
+
+    try{
+        //Busco el Producto y verifico existencia Producto ID
+        const ProductId = await productManager.getProductById(req.params.pId)
+        //Busco el Carro y verifico existencia Carro ID
+        const CartId = await cartManager.getCartById(req.params.cId)
+   
+        //Eliminar el Producto al Carro
+        await cartManager.deleteProductToCart(req.params.pId, CartId)
+
+        return res.status(200).json('Eliminado con exito')
+
+    }catch(err){
+        res.status(404).json({error: err.message})
+    }
+
+
+})
+
+router.delete('/:cId', async (req,res)=>{
+
+    try{
+        //Busco el Carro y verifico existencia Carro ID
+        const CartId = await cartManager.getCartById(req.params.cId)
+   
+        //Eliminar el Producto al Carro
+        await cartManager.clearCart(CartId)
+
+        return res.status(200).json('Cart clean')
+
+    }catch(err){
+        res.status(404).json({error: err.message})
+    }
+
+
+})
+
+router.put('/:cId', async (req, res)=>{ 
+    try{       
+        await cartManager.upDateCart(req.params.cId, req.body)
+        return res.status(200).json(`Carrito ${req.params.cId} actualizado`)
+
+    }catch(err){   
+        res.status(404).json({error: err.message})    
+    }
+    
+})
+
+router.put('/:cId/products/:pId', async (req, res)=>{ 
+    try{       
+        
+        return res.status(200).json(req.body)
+
+    }catch(err){   
+        res.status(404).json({error: err.message})    
+    }
+    
+})
+
+
 module.exports = router
 
