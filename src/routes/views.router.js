@@ -45,7 +45,6 @@ router.get('/productos/', async(req,res)=>{
             const productPage = await productManager.getPage(page)
 
             if(productPage.totalPage < page || page <= 0 ){
-
                 const producDefault = await productManager.getPage(1)
                 res.render('page', {
                     pageTitle : 'Productos',
@@ -64,7 +63,7 @@ router.get('/productos/', async(req,res)=>{
         }
 
     }catch(err){
-        console.log(err)
+       
         res.status(500).end('Error interno Servidor / Home-Productos')
     }
 
@@ -73,23 +72,18 @@ router.get('/productos/', async(req,res)=>{
 router.get('/carts/:cId', async(req,res)=>{
 
     try{
-        //SOLUCIONAR ESTA VISUALIZACION
         const cart = await cartManager.getCartPopulateById(req.params.cId)
-        
         const Newcart = cart.map(u => u.toObject({virtuals: true}))
-       const array = Newcart[0].products
-        console.log(array)
-        res.render('cart', {
-        pageTitle : 'Carrito',
-        products : array,
-        err: false,
-        script: false
-        })
+        const array = Newcart[0].products
        
-
+        res.render('cart', {
+            pageTitle : 'Carrito',
+            products : array,
+            script: false
+        })
+        
     }catch(err){
-      
-        res.status(500).end('Error interno Servidor / Home-Productos')
+        res.status(404).end({Error: err.message})
     }
 
 })

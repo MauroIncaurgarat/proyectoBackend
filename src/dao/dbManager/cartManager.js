@@ -128,13 +128,12 @@ class CartManager{
                 { //Filtro
                     _id: cartId, //Coincide el ID de Carro
                     products : { $elemMatch: {product : productId}} //Ya existe el elemento
-                },//Modificacion 
-                {   
-                    
+                },
+                {   //Seteo nueva cantidad     
                     $set : {"products.$.quantity":newQuantity}
                 })
 
-            if(result.matchedCount ===0){
+            if(result.matchedCount === 0){
                 throw new Error("No existe el producto en el carro")
             }
             
