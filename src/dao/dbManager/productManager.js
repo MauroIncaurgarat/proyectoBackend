@@ -85,20 +85,21 @@ class ProductManager {
             let PrevLink
             let NextLink
 
-            if(products.totalDocs < page || page <= 0 ){
+            if(products.totalPage < page || page <= 0 ){
                 res.status(404).json({error: "Page dont Exist"})
             }
             
             if(products.hasPrevPage && products.hasNextPage){      
                 PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
-                NextLink =  "http://localhost:8080/api/product?page=" +products.nextPage 
+                NextLink =  "http://localhost:8080/api/product?page=" + products.nextPage 
      
             }else if (!products.hasPrevPage && products.hasNextPage){
                 PrevLink = null
-                NextLink =  "http://localhost:8080/api/product?page=" +products.nextPage
+                NextLink =  "http://localhost:8080/productos/?page=" +products.nextPage
             }else{
                 PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
                 NextLink =  null
+               
             }
 
             const productPage = {
@@ -115,7 +116,7 @@ class ProductManager {
             }
 
             return productPage
-        }catch{
+        }catch(err){
             throw new Error("Found Page Error") 
         }
     }

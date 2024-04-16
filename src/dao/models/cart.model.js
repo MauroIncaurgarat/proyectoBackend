@@ -1,7 +1,17 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-    products : []
+    products : {
+        type: [
+            {
+                product: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product' //Nombre del modelo
+                }
+            }    
+        ],
+        default: []
+    }
 })
 
 //virtuals

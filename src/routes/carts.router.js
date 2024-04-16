@@ -22,7 +22,7 @@ router.post('/', async (_,res)=>{
 router.get('/:cId', async (req, res)=>{
    
     try{       
-        const cartId = await cartManager.getCartById(req.params.cId)
+        const cartId = await cartManager.getCartPopulateById(req.params.cId)
         return res.status(200).json(cartId)
 
     }catch(err){   

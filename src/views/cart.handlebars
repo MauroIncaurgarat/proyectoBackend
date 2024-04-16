@@ -1,0 +1,24 @@
+<h1>{{pageTitle}}</h1>
+
+{{#if err}}
+<div>No existe el carrito</div>
+{{/if}}
+
+    <h2>Carrito Actual contiene: </h2>
+    <div class="conteiner"> 
+        {{#each products}}
+            <ul id="{{id}}">
+                <li>Producto: {{product.title}}
+                    <ul>
+                        <li>Description: {{product.description}}</li>
+                        <li>Precio: {{product.price}}</li>
+                        <li>Cantidad: {{quantity}}</li>
+                        
+                    </ul>
+                </li>
+                
+            </ul>
+        
+        {{/each}}
+    </div>
+

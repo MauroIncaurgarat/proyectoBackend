@@ -4,21 +4,24 @@
 <div>Error: No Existe la pagina ingresada. Se redirige a pagina 1</div>
 {{/if}}
 <div class="conteiner"> 
-    {{#each products.docs}}
+    {{#each products.payload}}
         <ul id="{{id}}">
             <li>Producto: {{title}}
                 <ul>
                     <li>Description: {{description}}</li>
                     <li>Precio: {{price}}</li>
                     <li>Stock: {{stock}}</li>
+                    <li><button>Add to cart</button></li>
                 </ul>
             </li>
+            
         </ul>
+       
     {{/each}}
 </div>
 {{#if products.hasPrevPage }}
-<a href="/api/product?page={{products.prevPage}}">Anterior</a>
+<a href="/productos/?page={{products.prevPage}}">Anterior</a>
 {{/if}}
 {{#if products.hasNextPage }}
-<a href="/api/product?page={{products.nextPage}}">Siguiente</a>
+<a href="/productos/?page={{products.nextPage}}">Siguiente</a>
 {{/if}}

@@ -1,5 +1,6 @@
 const { error } = require('console')
 const CartModel = require ('../models/cart.model.js')
+require('../models/product.model.js')
 
 class CartManager{      
    
@@ -15,6 +16,15 @@ class CartManager{
       
         try{ 
             return await CartModel.find({_id : id})
+        }catch{
+            throw new Error("Invalid Cart ID")
+        }
+    }
+
+    async getCartPopulateById(id){
+      
+        try{ 
+            return await CartModel.find({_id : id}).populate('products.product')
         }catch{
             throw new Error("Invalid Cart ID")
         }
