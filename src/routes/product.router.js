@@ -58,8 +58,7 @@ router.get('/', async (req, res)=>{
             }
         }  
     }catch(err){
-        res.status(404).json({error: 'Parametro incorrecto'})
-        //throw err
+        res.status(404).json({error: err.message})
     }
 })
 

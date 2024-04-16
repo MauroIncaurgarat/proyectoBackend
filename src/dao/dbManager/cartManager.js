@@ -40,7 +40,6 @@ class CartManager{
                 },//Modificacion 
                 {   
                     $inc : {"products.$.quantity":1}
-                    
                 }
             )
 
@@ -52,12 +51,12 @@ class CartManager{
     async deleteProductToCart(ProductId, CartId){
         try { 
             //Eliminar Producto
-            const hola = await CartModel.findOne({products : { $elemMatch: {product : ProductId}}})
-          
-            if(!hola){ 
+           const existProduct = await CartModel.findOne({products : { $elemMatch: {product : ProductId}}})
+             
+            if(!existProduct){ 
                 throw new Error("No existe el producto en el carro")
             }
-
+            
             await CartModel.updateOne(
                 { //Filtro
                     _id: CartId, 
@@ -66,8 +65,10 @@ class CartManager{
                     $pull: {products : {product : ProductId}}
                 }
             )
+
+          
         }catch(err){
-            throw new Error(err)
+            throw new Error("Error al eliminar el producto")
         }
     }
 
@@ -107,6 +108,28 @@ class CartManager{
             */
         }catch{
              throw new Error(err)
+        }
+    }
+
+    async changeQuantity(cartId, productId, newQuantity){
+       
+        try{ 
+            const result = await CartModel.updateOne(
+                { //Filtro
+                    _id: cartId, //Coincide el ID de Carro
+                    products : { $elemMatch: {product : productId}} //Ya existe el elemento
+                },//Modificacion 
+                {   
+                    
+                    $set : {"products.$.quantity":newQuantity}
+                })
+
+            if(result.matchedCount ===0){
+                throw new Error("No existe el producto en el carro")
+            }
+            
+        }catch(err){
+            throw new Error(err)
         }
     }
 

@@ -18,6 +18,7 @@ router.post('/', async (_,res)=>{
 
 })
 
+//Modificar para que traiga los productos con populate
 router.get('/:cId', async (req, res)=>{
    
     try{       
@@ -41,7 +42,7 @@ router.post('/:cId/product/:pId', async (req,res)=>{
         //Agrego el Producto al Carro
         await cartManager.addProductToCart(req.params.pId, CartId)
 
-        return res.status(200).json('Agregado con exito')
+        return res.status(200).json('Producto agregado con exito')
 
     }catch(err){
         res.status(404).json({error: err.message})
@@ -54,12 +55,12 @@ router.delete('/:cId/product/:pId', async (req,res)=>{
 
     try{
         //Busco el Producto y verifico existencia Producto ID
-        const ProductId = await productManager.getProductById(req.params.pId)
+        await productManager.getProductById(req.params.pId)
         //Busco el Carro y verifico existencia Carro ID
-        const CartId = await cartManager.getCartById(req.params.cId)
+        await cartManager.getCartById(req.params.cId)
    
         //Eliminar el Producto al Carro
-        await cartManager.deleteProductToCart(req.params.pId, CartId)
+        await cartManager.deleteProductToCart(req.params.pId, req.params.cId)
 
         return res.status(200).json('Eliminado con exito')
 
@@ -89,8 +90,10 @@ router.delete('/:cId', async (req,res)=>{
 })
 
 router.put('/:cId', async (req, res)=>{ 
-    try{       
+    try{
+
         await cartManager.upDateCart(req.params.cId, req.body)
+
         return res.status(200).json(`Carrito ${req.params.cId} actualizado`)
 
     }catch(err){   
@@ -101,8 +104,16 @@ router.put('/:cId', async (req, res)=>{
 
 router.put('/:cId/products/:pId', async (req, res)=>{ 
     try{       
+        //Verifico existencia Producto ID
+        await productManager.getProductById(req.params.pId)
+        //Verifico existencia Carro ID
+        await cartManager.getCartById(req.params.cId)
         
-        return res.status(200).json(req.body)
+        const newQuantity = +req.body.quantity
+    
+        await cartManager.changeQuantity(req.params.cId,req.params.pId,newQuantity)
+
+        return res.status(200).json("Cantidad Modificada!")
 
     }catch(err){   
         res.status(404).json({error: err.message})    
