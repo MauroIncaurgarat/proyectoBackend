@@ -1,6 +1,10 @@
 <h1>{{pageTitle}}</h1>
-
+    <div>
+        <h1>Bienvenido {{user.firstName}} {{user.lastName}} ({{user.email}})</h1>
+        <a href="/api/sessions/logout">LogOut</a>
+    </div>
 <div class="conteiner"> 
+
     {{#each products}}
         <ul id="{{id}}">
             <li>Producto: {{title}}

@@ -1,15 +1,90 @@
 const {Router} = require('express')
 const router = Router()
-
+const User = require(`${__dirname}/../dao/models/user.model`)
 const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
 const CartManager = require(`../dao/dbManager/cartManager.js`)
+const {userIsLoggedIn, userIsNotLoggedIn} = require(`${__dirname}/../middlewares/auth.middleware.js`)
 
 const productManager = new ProductManager() 
 const cartManager = new CartManager()
 
-router.get('/', async(__,res)=>{
+router.get('/', async(req,res)=>{
 
     try{   
+        const isLoggedIn = ![null, undefined].includes(req.session.user)
+
+        res.render('index',{
+            pageTitle : 'Home',
+            isLoggedIn,
+            isNotLoggedIn: !isLoggedIn,
+           
+        })  
+
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error interno Servidor / Home')
+    }
+
+})
+
+router.get('/login',userIsNotLoggedIn, async(__,res)=>{
+
+    try{   
+        res.render('login',{
+            pageTitle : 'Login',
+        })  
+
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error Login')
+    }
+
+})
+
+router.get('/register',userIsNotLoggedIn, async(req,res)=>{
+
+    try{   
+        res.render('register',{
+            pageTitle : 'Register',
+        })  
+
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error register')
+    }
+
+})
+
+router.get('/profile',userIsLoggedIn, async(req,res)=>{
+
+    try{   
+        const idFromSession = req.session.user._id
+
+        const user = await User.findOne({_id: idFromSession})
+
+        res.render('profile',{
+            pageTitle : 'Register',
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                age: user.age,
+                email: user.email
+            }
+        })  
+
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error Profile')
+    }
+})
+
+
+router.get('/products',userIsLoggedIn, async(req ,res)=>{
+
+    try{   
+        const idFromSession = req.session.user._id
+        const user = await User.findOne({_id: idFromSession})
+
         const memoryProducts = await productManager.getProduct()
         // limito la vista a 10 productos
         const products = memoryProducts.slice(0,10)
@@ -26,6 +101,11 @@ router.get('/', async(__,res)=>{
         res.render('home',{
             products : productData,
             pageTitle : 'Catalogo Productos',
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email
+            },
             scripts: false
         })  
 
@@ -36,7 +116,7 @@ router.get('/', async(__,res)=>{
 
 })
 
-router.get('/productos/', async(req,res)=>{
+router.get('/products/',userIsLoggedIn, async(req,res)=>{
 
     try{
         const {page} = req.query
@@ -69,7 +149,7 @@ router.get('/productos/', async(req,res)=>{
 
 })
 
-router.get('/carts/:cId', async(req,res)=>{
+router.get('/carts/:cId',userIsLoggedIn, async(req,res)=>{
 
     try{
         const cart = await cartManager.getCartPopulateById(req.params.cId)

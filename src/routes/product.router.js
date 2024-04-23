@@ -11,10 +11,6 @@ router.get('/', async (req, res)=>{
     try { 
         const {limit, page, price, stock} = req.query
       
-        //MEJORAR MANEJO ERROR
-        /*if({}){
-            res.status(404).json({error: 'Error peticion'})
-        }*/
         // Page
         if(page){
             const productPage = await productManager.getPage(page)
