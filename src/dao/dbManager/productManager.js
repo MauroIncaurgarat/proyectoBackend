@@ -84,9 +84,10 @@ class ProductManager {
 
             let PrevLink
             let NextLink
+           
 
-            if(products.totalPage < page || page <= 0 ){
-                res.status(404).json({error: "Page dont Exist"})
+            if(products.totalPages < page || page <= 0 ){
+                throw new Error("Page dont Exist")
             }
             
             if(products.hasPrevPage && products.hasNextPage){      

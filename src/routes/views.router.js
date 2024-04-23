@@ -137,10 +137,10 @@ router.get('/products/',userIsLoggedIn, async(req,res)=>{
             }
           
             res.render('page', {
-            pageTitle : 'Productos',
-            products : productPage,
-            err:false,
-            script: false
+                pageTitle : 'Productos',
+                products : productPage,
+                err:false,
+                script: false
             })
         }
 
