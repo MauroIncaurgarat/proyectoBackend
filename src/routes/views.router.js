@@ -68,7 +68,8 @@ router.get('/profile',userIsLoggedIn, async(req,res)=>{
                 firstName: user.firstName,
                 lastName: user.lastName,
                 age: user.age,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         })  
 
@@ -104,7 +105,8 @@ router.get('/products',userIsLoggedIn, async(req ,res)=>{
             user: {
                 firstName: user.firstName,
                 lastName: user.lastName,
-                email: user.email
+                email: user.email,
+                role: user.role
             },
             scripts: false
         })  

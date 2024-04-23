@@ -7,7 +7,7 @@ router.post('/login', async (req, res)=>{
     
     try{ 
         const {email, password} = req.body //extraigo los datos del req
-        
+
         if(!email || !password){
             return res.status(400).json({error: 'Invalid credentials'})
         }
@@ -34,6 +34,9 @@ router.post('/register', async (req, res)=>{
     try{
         const {firstName, lastName, age, email, password} = req.body
         //Creanis un usuarui en la collection
+        
+        
+
         const user = await User.create({
             firstName, 
             lastName, 
@@ -41,6 +44,21 @@ router.post('/register', async (req, res)=>{
             email, 
             password
         })
+
+        if(email == "adminCoder@coder.com" && password == "adminCod3r123"){
+               
+            await User.updateOne(
+                { //Filtro
+                    email: "adminCoder@coder.com", //Coincide el ID de Carro
+                    password: "adminCod3r123" //Ya existe el elemento
+                },
+                {   //Seteo nueva cantidad     
+                    $set : {role: "admin"}
+                }
+            )
+            
+        }
+
 
         //una vez creado el ususario hago un loggin
         req.session.user = { email, _id: user._id.toString() }
