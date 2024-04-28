@@ -81,10 +81,8 @@ class ProductManager {
         try { 
             const page = pagequery || 1
             const products = await ProductModel.paginate({},{limit: 5, page, lean: true })
-
             let PrevLink
             let NextLink
-           
 
             if(products.totalPages < page || page <= 0 ){
                 throw new Error("Page dont Exist")
@@ -99,8 +97,7 @@ class ProductManager {
                 NextLink =  "http://localhost:8080/productos/?page=" +products.nextPage
             }else{
                 PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
-                NextLink =  null
-               
+                NextLink =  null    
             }
 
             const productPage = {

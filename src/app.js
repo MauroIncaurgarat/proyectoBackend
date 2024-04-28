@@ -3,7 +3,7 @@ const cartRouter = require(`${__dirname}/routes/carts.router.js`)
 const viewsRouter = require(`${__dirname}/routes/views.router.js`)
 const sessionRouter = require(`${__dirname}/routes/session.router.js`)
 const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
-const {dbName, mongoUrl} = require(`./dbConfig.js`)
+const {dbName, mongoUrl} = require(`${__dirname}/dbConfig.js`)
 
 const handlebars = require('express-handlebars')
 const express = require('express')

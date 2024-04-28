@@ -41,6 +41,21 @@ router.get('/login',userIsNotLoggedIn, async(__,res)=>{
 
 })
 
+router.get('/reset_password',userIsNotLoggedIn, async(__,res)=>{
+
+    try{   
+        res.render('reset_password',{
+            pageTitle : 'Reset Password',
+        })  
+
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error Resset Password')
+    }
+
+})
+
+
 router.get('/register',userIsNotLoggedIn, async(req,res)=>{
 
     try{   
@@ -78,7 +93,6 @@ router.get('/profile',userIsLoggedIn, async(req,res)=>{
         res.status(500).end('Error Profile')
     }
 })
-
 
 router.get('/products',userIsLoggedIn, async(req ,res)=>{
 
