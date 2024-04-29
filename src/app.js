@@ -1,18 +1,21 @@
+const handlebars = require('express-handlebars')
+const express = require('express')
+const mongoose = require('mongoose')
+const passport = require('passport')
+
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
 const viewsRouter = require(`${__dirname}/routes/views.router.js`)
 const sessionRouter = require(`${__dirname}/routes/session.router.js`)
 const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
-const {dbName, mongoUrl} = require(`${__dirname}/dbConfig.js`)
-
-const handlebars = require('express-handlebars')
-const express = require('express')
-const mongoose = require('mongoose')
-//const { $where } = require('./dao/models/product.model')
+const {dbName, mongoUrl} = require(`${__dirname}/config/db.config.js`)
+const initializeStrategy = require(`${__dirname}/config/passport.config`)
 
 
-const app = express()
+
         //CONFIGURACIONES
+const app = express()
+
 //configurar handlebars
 app.engine('handlebars', handlebars.engine()) //Express utilice el motor handelbars
 app.set('views', `${__dirname}/views`) //Donde estan las vistas ?
@@ -23,6 +26,11 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use(sessionMiddleware)
+
+//Conectar Passport con nuestra aplicacion
+initializeStrategy()
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Recurso Publico
 app.use(express.static(`${__dirname}/../public`)) 

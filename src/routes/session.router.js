@@ -1,33 +1,18 @@
 const {Router} = require('express')
 const { hashPassword, isValidPassword } = require('../utils/hashing')
 const User = require(`${__dirname}/../dao/models/user.model`)
+const passport = require('passport')
 
 const router = Router()
 
-router.post('/login', async (req, res)=>{
+router.post('/login',passport.authenticate('login', {failureRedirect: '/api/sessions/faillogin'}) ,async (req, res)=>{
     
-    try{ 
-        const {email, password} = req.body //extraigo los datos del req
+    try{                
+        //Crear nueva sesion si el susuario existe
 
-        if(!email || !password){
-            return res.status(400).json({error: 'Invalid credentials'})
-        }
-
-        //1. Verificar que el usuario no exista en la BD
-        const user = await User.findOne({ email})
-
-        if(!user){
-            return res.status(401).json({error: 'User not Found'})
-        }
-
-        //2. Validar su password
-        if(!isValidPassword(password, user.password)){
-            return res.status(401).json({error: 'Invalid password'})
-        }
-
-        // 3. Crear nueva sesion si el susuario existe
-        req.session.user = { email, _id: user._id.toString() }
-
+        //req.user inyecta passport
+        req.session.user = { email: req.user.email, _id: req.user._id }
+    
         //Una vez ingresado vamos a la vista de productos
         res.redirect('/products')
 
@@ -36,20 +21,17 @@ router.post('/login', async (req, res)=>{
     }
 })
 
-router.post('/register', async (req, res)=>{
+router.get('failloggin',(_,res)=>{
+    res.send('Login Failed!')
+})
+
+router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}) , async (req, res)=>{
     
     try{
-        const {firstName, lastName, age, email, password} = req.body
-        const adminpassword = password
-        //Crear un usuario en la collection
-        const user = await User.create({
-            firstName, 
-            lastName, 
-            age: +age, 
-            email, 
-            password: hashPassword(password) //hashing password
-        })
-        
+        console.log('usuario!', req.user)
+        //Si el registro fue exitoso redireccionamos
+        res.redirect('/')
+        /*
         if(email == "adminCoder@coder.com" && adminpassword == "adminCod3r123"){
                
             await User.updateOne(
@@ -62,15 +44,14 @@ router.post('/register', async (req, res)=>{
             )
             
         }
-
-        //una vez creado el ususario hago un loggin
-        req.session.user = { email, _id: user._id.toString() }
-        //redirigimos al inicio
-        res.redirect('/')
-
+      */  
     }catch(err){
         return res.status(500).json({error: err})
     } 
+})
+
+router.get('/failregister', (_,res) => {
+    res.send('Error registering user!')
 })
 
 router.post('/reset_password', async (req, res)=>{
@@ -99,8 +80,9 @@ router.post('/reset_password', async (req, res)=>{
         )
 
         res.redirect('/')
-    }catch{
-
+    }catch(err){
+        console.log(err)
+        res.status(500).end('Error Reset')
 
     }
 })
