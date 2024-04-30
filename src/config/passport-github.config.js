@@ -30,7 +30,7 @@ const initializeGitHubStrategy = () =>{
                 firstName,
                 lastName,
                 age: 30,
-                email: 'mauroinca@gmail.com',
+                email: 'nullenGitHub@gmail.com', //no carga de github
                 password: ' ' //debo colocar para que no me falle la authenticación
             }
             const result = await User.create(newUser)
