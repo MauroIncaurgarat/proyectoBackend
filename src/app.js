@@ -9,8 +9,8 @@ const viewsRouter = require(`${__dirname}/routes/views.router.js`)
 const sessionRouter = require(`${__dirname}/routes/session.router.js`)
 const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
 const {dbName, mongoUrl} = require(`${__dirname}/config/db.config.js`)
-const initializeStrategy = require(`${__dirname}/config/passport.config`)
-
+const initializeStrategy = require(`${__dirname}/config/passport-local.config.js`)
+const initializeGitHubStrategy = require(`${__dirname}/config/passport-github.config.js`)
 
 
         //CONFIGURACIONES
@@ -29,8 +29,12 @@ app.use(sessionMiddleware)
 
 //Conectar Passport con nuestra aplicacion
 initializeStrategy()
+initializeGitHubStrategy()
 app.use(passport.initialize())
 app.use(passport.session())
+
+
+
 
 //Recurso Publico
 app.use(express.static(`${__dirname}/../public`)) 

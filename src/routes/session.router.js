@@ -1,4 +1,5 @@
 const {Router} = require('express')
+//no uso mas isValidPassword --- ELIMINAR
 const { hashPassword, isValidPassword } = require('../utils/hashing')
 const User = require(`${__dirname}/../dao/models/user.model`)
 const passport = require('passport')
@@ -23,6 +24,16 @@ router.post('/login',passport.authenticate('login', {failureRedirect: '/api/sess
 
 router.get('failloggin',(_,res)=>{
     res.send('Login Failed!')
+})
+
+router.get('/github', passport.authenticate('github',{scope:['user:email']}), (req,res) => {})
+
+router.get('/githubcallback', passport.authenticate('github',{failureRedirect: '/'}), (req,res)=>{
+
+    req.session.user = {_id: req.user._id} //siga funcionando el perfil con _id
+
+    res.redirect('/products')
+
 })
 
 router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}) , async (req, res)=>{
