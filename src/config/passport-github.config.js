@@ -15,7 +15,7 @@ const initializeGitHubStrategy = () =>{
       //estrategia  
     },async(_accesToken, _refreshToken,profile, done) => {
         try{ 
-            console.log('Profile Giyhub',profile)
+            console.log('Profile Github',profile)
 
             const user = await User.findOne({email: profile._json.email})
             if(user){ 

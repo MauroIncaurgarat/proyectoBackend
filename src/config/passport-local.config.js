@@ -5,6 +5,7 @@ const hashingUtils = require(`${__dirname}/../utils/hashing`)
 
 const initializeStrategy = () =>{
 
+    //STRATEGY FOT REGISTER
     passport.use('register',new Strategy({
         //configurar strategy
         passReqToCallback: true,
@@ -37,13 +38,13 @@ const initializeStrategy = () =>{
             return done(null, result)
 
         }catch (err) {
-
             //error inesperado
             done(err)
         }    
     
     }))
 
+    //STRATEGY FOT LOGIN
     passport.use('login',new Strategy({
         //configurar strategy
         usernameField: 'email' //nuestro username es email
@@ -78,14 +79,11 @@ const initializeStrategy = () =>{
     }))
 
     passport.serializeUser((user, done)=>{
-
-        console.log('serialized!', user)
         done(null, user._id)
     })
 
     passport.deserializeUser(async (id,done)=>{
 
-        console.log('desserialized!', id)
         const user = await User.findById(id)
         done(null,user)
 

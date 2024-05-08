@@ -55,7 +55,6 @@ router.get('/reset_password',userIsNotLoggedIn, async(__,res)=>{
 
 })
 
-
 router.get('/register',userIsNotLoggedIn, async(req,res)=>{
 
     try{   

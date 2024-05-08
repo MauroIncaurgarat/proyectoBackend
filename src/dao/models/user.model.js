@@ -25,6 +25,10 @@ const schema = new mongoose.Schema({
     role: {
         type: String,
         default: 'user'
+    },
+    cartId: {
+        type: String
+        //Se cargaran los Id de los usuarios
     }
 })
 

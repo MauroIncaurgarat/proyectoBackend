@@ -1,6 +1,5 @@
 const {Router} = require('express')
-//no uso mas isValidPassword --- ELIMINAR
-const { hashPassword, isValidPassword } = require('../utils/hashing')
+const { hashPassword } = require('../utils/hashing')
 const User = require(`${__dirname}/../dao/models/user.model`)
 const passport = require('passport')
 
@@ -39,7 +38,7 @@ router.get('/githubcallback', passport.authenticate('github',{failureRedirect: '
 router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}) , async (req, res)=>{
     
     try{
-        console.log('usuario!', req.user)
+        console.log('Se registro usuario!', req.user)
         //Si el registro fue exitoso redireccionamos
         res.redirect('/')
         /*
@@ -67,7 +66,6 @@ router.get('/failregister', (_,res) => {
 
 router.post('/reset_password', async (req, res)=>{
     try{
-        console.log(req.body)
         const {email, password} = req.body
         //Validaciones
         if(!email || !password){
@@ -103,6 +101,22 @@ router.get('/logout', async (req, res) => {
         req.session.destroy(__ => {
         res.redirect('/')
         })
+    }catch(err){
+        return res.status(500).json({error: err})
+    }
+})
+
+router.get('/current', async (req,res) => {
+ 
+    try{   
+        const currentUser = req.user
+        
+        if(!currentUser){
+            console.log('Dont exist user')
+            res.redirect('/login')
+        }
+        res.send({'Usuario Actual': currentUser})
+
     }catch(err){
         return res.status(500).json({error: err})
     }
