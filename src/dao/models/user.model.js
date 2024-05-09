@@ -27,7 +27,8 @@ const schema = new mongoose.Schema({
         default: 'user'
     },
     cartId: {
-        type: String
+        type: String,
+        default:''
         //Se cargaran los Id de los usuarios
     }
 })
