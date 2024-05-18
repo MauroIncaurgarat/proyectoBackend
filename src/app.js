@@ -2,6 +2,7 @@ const handlebars = require('express-handlebars')
 const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
+const { productStorage } = require('./persistence/productStorage')
 
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
@@ -11,7 +12,6 @@ const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
 const {dbName, mongoUrl} = require(`${__dirname}/config/db.config.js`)
 const initializeStrategy = require(`${__dirname}/config/passport-local.config.js`)
 const initializeGitHubStrategy = require(`${__dirname}/config/passport-github.config.js`)
-
 
         //CONFIGURACIONES
 const app = express()
@@ -33,12 +33,8 @@ initializeGitHubStrategy()
 app.use(passport.initialize())
 app.use(passport.session())
 
-
-
-
 //Recurso Publico
 app.use(express.static(`${__dirname}/../public`)) 
-
 
         //ROUTERS API
 app.use('/api/product', productRouter) //Router Productos
@@ -48,14 +44,17 @@ app.use('/api/sessions', sessionRouter)
         //ROUTERS HTML
 app.use('/', viewsRouter);
 
-
+        //Set
+app.set('product.storage', new productStorage())
         //SERVIDOR
 const main = async () => { 
     //conecto a MONGO ATLAS
     await mongoose.connect(mongoUrl, {dbName: dbName })
         .then(()=>{
+                
                 app.listen(8080, ()=>{
                         console.log(' Servidor Listo !') 
+                        
                 })   
         })
     

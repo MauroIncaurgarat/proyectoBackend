@@ -1,12 +1,33 @@
-const { error } = require('console')
-const ProductModel = require ('../models/product.model.js')
+class ProductController {   
 
-class ProductManager {   
-    constructor() {}
+    constructor(service) {
+        this.service = service
+    }
     
+    #handleError(res,err) {
+       
+        if(err.message === 'not found') {
+            return res.status(404).json({error: 'Not found'})
+        }
+
+        if(err.message === 'invalid parameters'){
+            return res.status(400).json({error: 'Invalid Parameters'})
+        }
+
+        return res.status(500).json({error : err})
+
+    }
+
     //Agregar Productos
-    async addProduct(title, description, price , thumbnail, code, stock=0) {
+    async addProduct(req, res) {
         try{  
+            const title = req.body.title
+            const description = req.body.description 
+            const price = +req.body.price 
+            const thumbnail = req.body.thumbnail 
+            const code = req.body.code 
+            const stock = +req.body.stock 
+
             //Number Check
             if(isNaN(price)) {         
                 throw new Error("Price must be a number")           
@@ -18,65 +39,66 @@ class ProductManager {
                 throw new Error( `Falta un Campo`)
             }        
             //creamos usuario con Model Mongo DB
-            await  ProductModel.create ({
-                title : title.trim(),  
-                description : description.trim(),
-                code : code.trim(),
-                price,
-                stock ,
-                thumbnail : thumbnail.trim()
-            })
-        }catch{
-            throw new Error("Error al agregar producto")
+
+            await this.service.create(title,code,description,price,stock,thumbnail)
+            
+            res.status(200).json('Producto enviado')
+    
+        }catch(err){
+            return this.#handleError(err)
         }               
     }
     //Leer Productos
     async getProduct(){
         try{ 
-            const ProductData = await ProductModel.find()
+            const ProductData = await this.service.getProduct() //
             return ProductData.map(u => u.toObject({virtuals: true}))
-        }catch{
-            throw new Error("Error al obtener productos")
+
+        }catch(err){
+            return this.#handleError(err)
         }
     }   
     //Obtener Producto ById
-    async getProductById(id) {
+    async getProductById(req, res) {
         try{ 
-            return await ProductModel.find({_id : id})
-        }catch{
-            throw new Error("Invalid Product ID")
+            const id = req.params.pId
+            return res.status(200).json(await this.service.getProductById(id)) 
+
+        }catch(err){
+            return this.#handleError(err)
         }
     }
 
     //Eliminar Productos por ID
-    async deletProductById(id){
+    async deleteProductById(req, res){
         try{ 
-            await ProductModel.deleteOne({_id: id})
-        }catch{
-            throw new Error("No existe Id")
+            const id = req.params.pId
+            await this.service.deleteProductById(id)
+
+            res.status(200).json(`Producto ${req.params.pId} Eliminado !`)
+        }catch(err){
+            return this.#handleError(err)
         }
     }
 
     //Actualizar Producto
-    async upDateProduct(id,campos){
+    async upDateProduct(req,res){
         try{ 
-            return await ProductModel.updateOne(
-                {_id: id}, //Filtro
-                {$set: { //Como quiero que actualice
-                title: campos.title,
-                description: campos.description,
-                price: campos.price,
-                thumbnail: campos.thumbnail,
-                code: campos.code,
-                stock: campos.stock,
-                id: campos.id}
-            })
-        }catch{
-            throw new Error("Error al actualizar")
+            const id = +req.params.pId
+            const campos = req.body
+
+            this.service.upDateProduct(id,campos)
+
+            return res.status(200).json('Producto Actualizado !')
+        }catch(err){
+            return this.#handleError(err)
         }
     }
 
-    // Filtro Paginas            
+    //Filtros
+   /*
+    // Filtro Paginas    
+         
     async getPage(pagequery){
         try { 
             const page = pagequery || 1
@@ -118,6 +140,7 @@ class ProductManager {
             throw new Error("Found Page Error") 
         }
     }
+    
     // Filtro Precio
     async priceFilter(order){   
         try{ 
@@ -161,6 +184,7 @@ class ProductManager {
              throw new Error("No funciona filtro")
         }
     }
+    */
 }
 
-module.exports = ProductManager
+module.exports = {ProductController}

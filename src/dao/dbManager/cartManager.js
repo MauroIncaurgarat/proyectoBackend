@@ -67,6 +67,7 @@ class CartManager{
                 throw new Error("No existe el producto en el carro")
             }
             
+            //Eliminar producto del carrito
             await CartModel.updateOne(
                 { //Filtro
                     _id: CartId, 

@@ -1,12 +1,35 @@
 // api/products/ 
 const {Router} = require('express')
 const router = Router()
-const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
-const productManager = new ProductManager() 
+
+//const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
+//const productManager = new ProductManager() 
+
+const { ProductController } = require(`../controllers/product.controller`)
+const { ProductService } = require(`../services/productService`)
+
+const withProductController = callback => {
+    return (req, res) => {
+        const service = new ProductService(
+          req.app.get('product.storage')
+        )
+        const productController = new ProductController(service)
+        return callback(productController, req, res)
+    }
+}
+
+//TERMINAR LA PARTE DE PAGINATE !!!!!!!!!!!
+
 
 //INICIAR
+router.post('/', withProductController( (productController, req,res)=> productController.addProduct(req, res)))
+router.get('/:pId', withProductController( (productController, req,res)=> productController.getProductById(req, res)))
+router.put('/:pId',withProductController( (productController, req,res)=> productController. upDateProduct(req,res)))
+router.delete('/:pId', withProductController( (productController, req,res)=> productController. deleteProductById(req, res)))
+
 
 // GET
+/*
 router.get('/', async (req, res)=>{
     try { 
         const {limit, page, price, stock} = req.query
@@ -24,9 +47,7 @@ router.get('/', async (req, res)=>{
                 res.status(200).json(stockProduct)
             }else{
                 res.status(404).json({error: 'Filtro de stock incorrecto. Debe ser 1 / 0'})
-            }
-            
-                
+            }     
         }
 
         //FILTRO PRECIO ASCENDENTE O DESCENDENTE
@@ -57,20 +78,22 @@ router.get('/', async (req, res)=>{
         res.status(404).json({error: err.message})
     }
 })
-
+*/
+/*
 router.get('/:pId', async (req, res)=>{
-   
     try{    
         const ProductId = await productManager.getProductById(req.params.pId)
         return res.status(200).json(ProductId)
     }catch(err){   
         res.status(404).json({error: err.message})    
     }
+    
 })
+*/
 
 // POST 
+/*
 router.post('/',async (req,res)=>{
-    /*No puedo validar number and stock*/
     try{   
         //Ejecutar Add Product
         await productManager.addProduct(req.body.title, req.body.description, +req.body.price, req.body.thumbnail, req.body.code, +req.body.stock )
@@ -80,9 +103,12 @@ router.post('/',async (req,res)=>{
     catch(err){
         res.status(400).json({Error: err.message})
     }
+    
 })
+*/
 
 // PUT
+/*
 router.put('/:pId',async (req,res)=>{
     try { 
         await productManager.upDateProduct(req.params.pId,req.body)
@@ -92,16 +118,18 @@ router.put('/:pId',async (req,res)=>{
         res.status(404).json({Error: err.message})
     }
 })
-
+*/
 //DELETE
+/*
 router.delete('/:pId', async(req,res)=>{
     try {         
         await productManager.deletProductById(req.params.pId)
         res.status(200).json(`Producto ${req.params.pId} Eliminado !`)
     }catch(err){
         res.status(404).json({Error: err.message})
-    }  
-})
+    } 
+     
+})*/
 
 module.exports = router
 
