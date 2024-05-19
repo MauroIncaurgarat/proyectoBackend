@@ -1,3 +1,4 @@
+
 class ProductController {   
 
     constructor(service) {
@@ -96,95 +97,50 @@ class ProductController {
     }
 
     //Filtros
-   /*
-    // Filtro Paginas    
-         
-    async getPage(pagequery){
-        try { 
-            const page = pagequery || 1
-            const products = await ProductModel.paginate({},{limit: 5, page, lean: true })
-            let PrevLink
-            let NextLink
+    async filterProduct(req,res){
 
-            if(products.totalPages < page || page <= 0 ){
-                throw new Error("Page dont Exist")
-            }
+       try{ 
+       
+            const {limit, page, price, stock} = req.query
             
-            if(products.hasPrevPage && products.hasNextPage){      
-                PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
-                NextLink =  "http://localhost:8080/api/product?page=" + products.nextPage 
-     
-            }else if (!products.hasPrevPage && products.hasNextPage){
-                PrevLink = null
-                NextLink =  "http://localhost:8080/productos/?page=" +products.nextPage
-            }else{
-                PrevLink = "http://localhost:8080/api/product?page=" + products.prevPage
-                NextLink =  null    
+            //Page
+            if(page){
+                const productPage = await this.service.getPage(page)
+                return res.status(200).json({ productPage })
+            }  
+            //Disponibilidad
+            if(stock){
+                if(stock ==1 || stock ==0){
+                    const stockProduct = await this.service.stockFilter(stock)
+                    return res.status(200).json(stockProduct)
+                }  
             }
+            //FILTRO PRECIO ASCENDENTE O DESCENDENTE
+            if(price){
+                if(price == "asc"||price == "desc"){
+                 const result = await this.service.priceFilter(price)
+                 return res.status(200).json(result)
+                }
+            }
+            //Limite
+            if(limit){
+                const products = await this.service.getProduct() 
+                const element = products.length    
+                if(limit == 0 ){
+                    return res.status(200).json({Error: 'Ingresaron 0'})
+                }
+                if(limit <= element && limit > 0){ 
+                    return res.status(200).json(await products.slice(0,limit))  
+                }
+             }  
+            // return res.status(200).json( await this.service.getProduct() )
 
-            const productPage = {
-                status: "succes",
-                payload: products.docs,
-                totalPage: products.totalPages,
-                prevPage: products.prevPage,
-                nextPage: products.nextPage,
-                page: products.page,
-                hasPrevPage: products.hasPrevPage,
-                hasNextPage: products.hasNextPage,
-                prevLink: PrevLink,
-                nextLink: NextLink
-            }
+        }catch(err){
+            return this.#handleError(err)
+        }
 
-            return productPage
-        }catch(err){
-            throw new Error("Found Page Error") 
-        }
     }
-    
-    // Filtro Precio
-    async priceFilter(order){   
-        try{ 
-            if (order == "asc"){
-                const result = await ProductModel.aggregate([ 
-                    {$sort: {price: 1 }}
-                ])         
-                return result
-            }
-            if (order == "desc"){
-                const result = await ProductModel.aggregate([ 
-                    {$sort: {price: -1 }}
-                ])        
-                return result
-            }
-        }catch(err){
-             throw new Error("No funciona filtro")
-        }
-    }
-    // Filtro Stock
-    async stockFilter(param){   
-        try{  
-            if(param==1){ 
-                const result = await ProductModel.aggregate([ 
-                    {
-                        $match: {stock: { $gt:0}}
-                    }
-                ]) 
-                return result        
-            }
-            if(param==0){
-                const result = await ProductModel.aggregate([ 
-                    {
-                        $match: {stock: { $eq:0}}
-                    }
-                ]) 
-                return result
-            }
-          
-        }catch(err){
-             throw new Error("No funciona filtro")
-        }
-    }
-    */
+
 }
-
+        
 module.exports = {ProductController}

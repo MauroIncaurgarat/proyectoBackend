@@ -43,6 +43,38 @@ class productStorage {
             id: campos.id}
         })
     }
+
+    async paginate(page){
+        return await ProductModel.paginate({},{limit: 5, page, lean: true })
+    }
+
+    async priceAggregate(number){
+       return await ProductModel.aggregate([ 
+            {$sort: {price: +number }}
+        ])         
+    }
+
+    async existStock(){
+        return await ProductModel.aggregate([ 
+            {
+                $match: {stock: { $gt:0}}
+            }
+        ])         
+    }
+
+    async emptyStock(){
+        return await ProductModel.aggregate([ 
+            {
+                $match: {stock: { $eq:0}}
+            }
+        ]) 
+
+    }
+
+
+
+
+
 }
 
 module.exports = { productStorage }
