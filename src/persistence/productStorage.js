@@ -68,13 +68,7 @@ class productStorage {
                 $match: {stock: { $eq:0}}
             }
         ]) 
-
     }
-
-
-
-
-
 }
 
 module.exports = { productStorage }

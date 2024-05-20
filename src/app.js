@@ -2,7 +2,10 @@ const handlebars = require('express-handlebars')
 const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
+
 const { productStorage } = require('./persistence/productStorage')
+const { cartStorage } = require('./persistence/cartStorage')
+const { UserStorage} = require('./persistence/userStorage')
 
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
@@ -36,6 +39,10 @@ app.use(passport.session())
 //Recurso Publico
 app.use(express.static(`${__dirname}/../public`)) 
 
+//Set
+app.set('product.storage', new productStorage())
+app.set('cart.storage', new cartStorage())
+app.set('user.storage', new UserStorage())
         //ROUTERS API
 app.use('/api/product', productRouter) //Router Productos
 app.use('/api/cart', cartRouter) //Router Productos
@@ -44,8 +51,8 @@ app.use('/api/sessions', sessionRouter)
         //ROUTERS HTML
 app.use('/', viewsRouter);
 
-        //Set
-app.set('product.storage', new productStorage())
+
+
         //SERVIDOR
 const main = async () => { 
     //conecto a MONGO ATLAS

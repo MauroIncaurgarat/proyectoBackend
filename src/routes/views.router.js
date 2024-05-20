@@ -1,186 +1,49 @@
 const {Router} = require('express')
 const router = Router()
-const User = require(`${__dirname}/../dao/models/user.model`)
-const ProductManager = require(`${__dirname}/../dao/dbManager/productManager.js`)
-const CartManager = require(`../dao/dbManager/cartManager.js`)
+
 const {userIsLoggedIn, userIsNotLoggedIn} = require(`${__dirname}/../middlewares/auth.middleware.js`)
 
-const productManager = new ProductManager() 
-const cartManager = new CartManager()
+const { UserService } = require(`../services/userService`)
+const { ProductService } = require(`../services/productService`)
+const { CartService } = require(`../services/cartService`)
 
-router.get('/', async(req,res)=>{
+const { ViewController } = require(`../controllers/view.controller`)
 
-    try{   
-        const isLoggedIn = ![null, undefined].includes(req.session.user)
+//INSTANCIAR CONTROLLER
+const withViewController = callback => {
+    return (req, res) => {
+        //Servicio User
+        const userService = new UserService(
+          req.app.get('user.storage')
+        )
+        //Servicio Product
+        const productService = new ProductService(
+            req.app.get('product.storage')
+        )
+        //Servicio Cart
+        const cartService = new CartService(
+            req.app.get('cart.storage')
+        )
 
-        res.render('index',{
-            pageTitle : 'Home',
-            isLoggedIn,
-            isNotLoggedIn: !isLoggedIn,
-           
-        })  
-
-    }catch(err){
-        
-        res.status(500).end('Error interno Servidor / Home')
+        const viewController = new ViewController(userService, productService, cartService)
+        return callback(viewController, req, res)
     }
+}
 
-})
+router.get('/', withViewController((viewController, req,res)=>viewController.renderHome(req,res)))
 
-router.get('/login',userIsNotLoggedIn, async(__,res)=>{
+router.get('/login',userIsNotLoggedIn, withViewController((viewController, req,res)=>viewController.renderLoggin(req,res)))
 
-    try{   
-        res.render('login',{
-            pageTitle : 'Login',
-        })  
+router.get('/reset_password',userIsNotLoggedIn, withViewController((viewController, req,res)=>viewController.renderResetPassword(req,res)))
 
-    }catch(err){
-        console.log(err)
-        res.status(500).end('Error Login')
-    }
+router.get('/register',userIsNotLoggedIn, withViewController((viewController, req,res)=>viewController.renderRegister(req,res)))
 
-})
+router.get('/profile',userIsLoggedIn, withViewController((viewController, req,res)=>viewController.renderProfile(req,res)))
 
-router.get('/reset_password',userIsNotLoggedIn, async(__,res)=>{
+router.get('/products',userIsLoggedIn,  withViewController((viewController, req,res)=>viewController.renderDefaultProducts(req,res)))
 
-    try{   
-        res.render('reset_password',{
-            pageTitle : 'Reset Password',
-        })  
+router.get('/productos/',userIsLoggedIn, withViewController((viewController, req,res)=>viewController.renderPaginateProducts(req,res)))
 
-    }catch(err){
-        console.log(err)
-        res.status(500).end('Error Resset Password')
-    }
-
-})
-
-router.get('/register',userIsNotLoggedIn, async(__,res)=>{
-
-    try{   
-        res.render('register',{
-            pageTitle : 'Register',
-        })  
-
-    }catch(err){
-        console.log(err)
-        res.status(500).end('Error register')
-    }
-
-})
-
-router.get('/profile',userIsLoggedIn, async(req,res)=>{
-
-    try{   
-        const idFromSession = req.session.user._id
-
-        const user = await User.findOne({_id: idFromSession})
-
-        res.render('profile',{
-            pageTitle : 'Register',
-            user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                age: user.age,
-                email: user.email,
-                role: user.role
-            }
-        })  
-
-    }catch(err){
-        console.log(err)
-        res.status(500).end('Error Profile')
-    }
-})
-
-router.get('/products',userIsLoggedIn, async(req ,res)=>{
-
-    try{   
-        const idFromSession = req.session.user._id
-        const user = await User.findOne({_id: idFromSession})
-
-        const memoryProducts = await productManager.getProduct()
-        // limito la vista a 10 productos
-        const products = memoryProducts.slice(0,10)
-        const productData = products.map( product => ({
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            thumbnail: product.thumbnail,
-            code: product.code,
-            stock: product.stock,
-            id: product.id
-        }))
-        
-        res.render('home',{
-            products : productData,
-            pageTitle : 'Catalogo Productos',
-            user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role
-            },
-            scripts: false
-        })  
-
-    }catch(err){
-        console.log(err)
-        res.status(500).end('Error interno Servidor / Home-Productos')
-    }
-
-})
-
-router.get('/products/',userIsLoggedIn, async(req,res)=>{
-
-    try{
-        const {page} = req.query
-        
-        if(page){ 
-            const productPage = await productManager.getPage(page)
-
-            if(productPage.totalPage < page || page <= 0 ){
-                const producDefault = await productManager.getPage(1)
-                res.render('page', {
-                    pageTitle : 'Productos',
-                    err : true,
-                    products : producDefault,
-                    script: false
-                })
-            }
-          
-            res.render('page', {
-                pageTitle : 'Productos',
-                products : productPage,
-                err:false,
-                script: false
-            })
-        }
-
-    }catch(err){
-       
-        res.status(500).end('Error interno Servidor / Home-Productos')
-    }
-
-})
-
-router.get('/carts/:cId',userIsLoggedIn, async(req,res)=>{
-
-    try{
-        const cart = await cartManager.getCartPopulateById(req.params.cId)
-        const Newcart = cart.map(u => u.toObject({virtuals: true}))
-        const array = Newcart[0].products
-       
-        res.render('cart', {
-            pageTitle : 'Carrito',
-            products : array,
-            script: false
-        })
-        
-    }catch(err){
-        res.status(404).end({Error: err.message})
-    }
-
-})
+router.get('/carts/:cId',userIsLoggedIn,withViewController((viewController, req,res)=>viewController.renderCart(req,res)))
 
 module.exports = router

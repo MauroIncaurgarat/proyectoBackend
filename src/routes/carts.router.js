@@ -1,14 +1,43 @@
 // api/cart/ 
 const {Router} = require('express')
-const CartManager = require(`../dao/dbManager/cartManager`)
-const ProductManager = require(`../dao/dbManager/productManager`)
-
 const router = Router()
-const cartManager = new CartManager()
-const productManager = new ProductManager()
+
+const { CartController } = require(`../controllers/cart.controller`)
+const { CartService } = require(`../services/cartService`)
+const { ProductService } = require(`../services/productService`)
+
+//INSTANCIAS CONTROLLER
+const withCartController = callback => {
+    return (req, res) => {
+        const productService = new ProductService(
+            req.app.get('product.storage')
+        )
+        const cartService = new CartService(
+          req.app.get('cart.storage')
+        )
+        
+        const cartController = new CartController(cartService,productService)
+        return callback(cartController, req, res)
+    }
+}
+
+
+router.get('/:cId', withCartController((cartController, req, res) => cartController.getCartPopulateById(req,res)))
+
+router.post('/', withCartController((cartController, req, res) => cartController.addCart(req,res)))
+router.post('/:cId/product/:pId', withCartController((cartController, req, res) => cartController.addProductToCart(req,res)))
+
+router.delete('/:cId/product/:pId',  withCartController((cartController, req, res) => cartController.deleteProductToCart(req, res)))
+router.delete('/:cId', withCartController((cartController, req, res) => cartController.cleanCart(req,res)))
+
+router.put('/:cId', withCartController((cartController, req, res) => cartController.upDateCart(req,res)))
+router.put('/:cId/products/:pId',withCartController((cartController, req, res) => cartController.changeQuantity(req,res)))
+
+module.exports = router
+
+/*
 
 router.post('/', async (_,res)=>{
-
     try {
         cartManager.addCart()
         res.status(200).json('Se Creo Carrito !')
@@ -50,7 +79,6 @@ router.post('/:cId/product/:pId', async (req,res)=>{
 
 
 })
-
 router.delete('/:cId/product/:pId', async (req,res)=>{
 
     try{
@@ -67,10 +95,7 @@ router.delete('/:cId/product/:pId', async (req,res)=>{
     }catch(err){
         res.status(404).json({error: err.message})
     }
-
-
 })
-
 router.delete('/:cId', async (req,res)=>{
 
     try{
@@ -102,6 +127,8 @@ router.put('/:cId', async (req, res)=>{
     
 })
 
+
+
 router.put('/:cId/products/:pId', async (req, res)=>{ 
     try{       
         //Verifico existencia Producto ID
@@ -120,7 +147,7 @@ router.put('/:cId/products/:pId', async (req, res)=>{
     }
     
 })
+*/
 
 
-module.exports = router
 

@@ -98,12 +98,9 @@ class ProductController {
 
     //Filtros
     async filterProduct(req,res){
-
        try{ 
-       
-            const {limit, page, price, stock} = req.query
-            
-            //Page
+            const {limit, page, price, stock} = req.query      
+            //Paginas
             if(page){
                 const productPage = await this.service.getPage(page)
                 return res.status(200).json({ productPage })
@@ -115,7 +112,7 @@ class ProductController {
                     return res.status(200).json(stockProduct)
                 }  
             }
-            //FILTRO PRECIO ASCENDENTE O DESCENDENTE
+            //PRECIO ASCENDENTE O DESCENDENTE
             if(price){
                 if(price == "asc"||price == "desc"){
                  const result = await this.service.priceFilter(price)
@@ -133,7 +130,7 @@ class ProductController {
                     return res.status(200).json(await products.slice(0,limit))  
                 }
              }  
-            // return res.status(200).json( await this.service.getProduct() )
+            return res.status(200).json( await this.service.getProduct() )
 
         }catch(err){
             return this.#handleError(err)
