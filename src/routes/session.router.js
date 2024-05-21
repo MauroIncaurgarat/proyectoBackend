@@ -3,16 +3,20 @@ const passport = require('passport')
 
 const router = Router()
 
+const { CartService } = require(`../services/cartService`)
 const { UserController } = require(`../controllers/user.controller`)
 const { UserService } = require(`../services/userService`)
 
 //INSTANCIAR CONTROLLER
 const withUserController = callback => {
     return (req, res) => {
-        const service = new UserService(
+        const userService = new UserService(
           req.app.get('user.storage')
         )
-        const userController = new UserController(service)
+        const cartService = new CartService(
+          req.app.get('cart.storage')
+        )
+        const userController = new UserController(userService,cartService)
         return callback(userController, req, res)
     }
 }

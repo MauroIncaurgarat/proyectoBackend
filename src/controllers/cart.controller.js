@@ -1,4 +1,3 @@
-
 class CartController {
     
     constructor(cartService, productService) {
@@ -60,11 +59,11 @@ class CartController {
             //Busco el Producto y verifico existencia Producto ID
             await this.productService.getProductById(req.params.pId)
             //Busco el Carro y verifico existencia Carro ID
-            await this.cartService.getCartById(req.params.cId)
+            const cartId = await this.cartService.getCartById(req.params.cId)
 
             //Sumar Producto SI NO EXISTE 
-            await this.cartService.addProductToCart(req.params.pId, req.params.cId)
-
+            await this.cartService.addProductToCart(req.params.pId, cartId)
+        
             res.status(200).json('Carrito Actualizado!')
         }catch(err){
             return console.log(err)

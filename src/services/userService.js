@@ -8,6 +8,10 @@ class UserService {
         return await this.storage.find(email)  
     }
 
+    async setCartId(email, id){
+        this.storage.setCartId(email, id)
+    }
+
     async findOneUser(idFromSession){
         return await this.storage.findOneUser(idFromSession)
     }

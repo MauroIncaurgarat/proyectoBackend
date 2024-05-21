@@ -1,6 +1,12 @@
+const dotenv = require('dotenv')
+
+dotenv.config({
+    path: './.env'
+})
+
 module.exports = {
-    appId: '887955',
-    clientID: 'Iv1.09baa0d561cedc01',
-    clientSecret:'8572c158375adebd8d6ce1ff7a3fd444e60a6592',
+    appId: process.env.GITHUB_ID,
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret:process.env.GITHUB_CLIENT_SECRET,
     callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
 }

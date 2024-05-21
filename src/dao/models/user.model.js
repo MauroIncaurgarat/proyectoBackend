@@ -27,8 +27,8 @@ const schema = new mongoose.Schema({
         default: 'user'
     },
     cartId: {
-        type: String,
-        default:''
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Cart' //Nombre del modelo
         //Se cargaran los Id de los usuarios
     }
 })

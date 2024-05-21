@@ -1,7 +1,8 @@
 class UserController{
 
-    constructor(service){
-        this.service = service
+    constructor(userService, cartService){
+        this.userService = userService
+        this.cartService = cartService
     }
 
     #handleError(res,err) {
@@ -19,6 +20,7 @@ class UserController{
     }
 
     async failLoggin(__ ,res) {
+      
         try{                
             res.send('Login Failed!')
     
@@ -28,10 +30,20 @@ class UserController{
     }
 
     async register(req, res){
+   
         try{
-            console.log('Se registro usuario!', req.user)
+            
             //Si el registro fue exitoso redireccionamos
             res.redirect('/')
+            const email = req.user.email
+            //Le creamos un carro
+            const newCart = await this.cartService.createCart()
+      
+            //inserto al User
+            await this.userService.setCartId(email,newCart.id)
+            
+            console.log('Se registro usuario!', req.user, ' Y su CartId es', newCart.id)
+
             /*
             if(email == "adminCoder@coder.com" && adminpassword == "adminCod3r123"){
                    
@@ -52,19 +64,22 @@ class UserController{
     }
 
     async gitHubNormalizeId(req,res){
-        req.session.user = {_id: req.user._id} //siga funcionando el perfil con _id
-
-        res.redirect('/products')
+        try{
+            req.session.user = {_id: req.user._id} //siga funcionando el perfil con _id
+            res.redirect('/products')
+        }catch(err){
+            return this.#handleError(err)
+        }
     }
 
     async createSession (req, res){
     
         try{                
             //Crear nueva sesion si el susuario existe
-    
+            
             //req.user inyecta passport
             req.session.user = { email: req.user.email, _id: req.user._id }
-        
+            
             //Una vez ingresado vamos a la vista de productos
             res.redirect('/products')
     
@@ -82,21 +97,22 @@ class UserController{
             }
     
             //1. Verificar que el usuario no exista en la BD
-            const user = await this.service.find(email)
+            const user = await this.userService.find(email)
+           
             if(!user){
                 return res.status(401).json({error: 'User not Found'})
             }
             
-            await this.service.upDatePassword(user.email, password )
+            await this.userService.upDatePassword(user.email, password )
         
             res.redirect('/')
         }catch(err){
-            return console.log(err)
-    
+            return console.log(err) 
         }
     }
     
     async logOut(req, res) {
+        
         try { 
             req.session.destroy(__ => {
                 res.redirect('/')

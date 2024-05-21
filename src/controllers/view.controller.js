@@ -28,8 +28,7 @@ class ViewController{
             res.render('index',{
                 pageTitle : 'Home',
                 isLoggedIn,
-                isNotLoggedIn: !isLoggedIn,
-               
+                isNotLoggedIn: !isLoggedIn,      
             })  
     
         }catch(err){
@@ -46,19 +45,17 @@ class ViewController{
         }catch(err){
             return this.#handleError(err)
         }   
-    
     }
 
     async renderResetPassword(req,res){
         try{   
             res.render('reset_password',{
                 pageTitle : 'Reset Password',
-            })  
-    
+            })
+
         }catch(err){
             return this.#handleError(err)
         }   
-
     }
 
     async renderRegister(__, res){
@@ -74,6 +71,7 @@ class ViewController{
     }
 
     async renderProfile(req  ,res){
+     
         try{ 
             const idFromSession = req.session.user._id
             
@@ -89,6 +87,7 @@ class ViewController{
                     role: user.role
                 }
             })
+            
         }catch(err){
             return this.#handleError(err)
         }    

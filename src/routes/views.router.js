@@ -30,6 +30,7 @@ const withViewController = callback => {
     }
 }
 
+//GET
 router.get('/', withViewController((viewController, req,res)=>viewController.renderHome(req,res)))
 
 router.get('/login',userIsNotLoggedIn, withViewController((viewController, req,res)=>viewController.renderLoggin(req,res)))

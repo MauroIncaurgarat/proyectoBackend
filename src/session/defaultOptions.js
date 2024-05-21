@@ -1,7 +1,11 @@
-//Opciones de Sessions
+const dotenv = require('dotenv')
 
+dotenv.config({
+    path: './.env'
+})
+//Opciones de Sessions
 module.exports = {
-    secret: 'adasd127812be',
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true
 }

@@ -35,12 +35,14 @@ class ProductController {
             }else if(isNaN(stock)){       
                 throw new Error("Stock must be a number")
             }       
+            
             //Falto un campo
             if(!title || !description || !price  || !thumbnail || !stock){       
                 throw new Error( `Falta un Campo`)
             }        
-            //creamos usuario con Model Mongo DB
-
+           
+            
+            //creamos usuario 
             await this.service.create(title,code,description,price,stock,thumbnail)
             
             res.status(200).json('Producto enviado')
@@ -69,7 +71,6 @@ class ProductController {
             return this.#handleError(err)
         }
     }
-
     //Eliminar Productos por ID
     async deleteProductById(req, res){
         try{ 
@@ -81,7 +82,6 @@ class ProductController {
             return this.#handleError(err)
         }
     }
-
     //Actualizar Producto
     async upDateProduct(req,res){
         try{ 
@@ -95,7 +95,6 @@ class ProductController {
             return this.#handleError(err)
         }
     }
-
     //Filtros
     async filterProduct(req,res){
        try{ 

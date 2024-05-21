@@ -3,10 +3,8 @@ const CartModel = require ('../dao/models/cart.model.js')
 
 class cartStorage {
 
-    constructor(){}
-
     async createCart(){
-        await CartModel.create({})
+        return await CartModel.create({})
     }
     
     async getCartById(cartId){
@@ -63,7 +61,6 @@ class cartStorage {
         )
     }
 
-    //Funciona
     async cleanCart(cId){
         
         await CartModel.updateOne(
