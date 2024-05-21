@@ -7,10 +7,15 @@ const schema = new mongoose.Schema({
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Product' //Nombre del modelo
+                },
+                quantity: {
+                    type: Number,
+                    default: 0
                 }
             }    
         ],
         default: []
+
     }
 })
 

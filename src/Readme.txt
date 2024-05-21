@@ -1,3 +1,12 @@
+   .env MONGO_NAME = ecommerce
+        MONGO_URL = mongodb+srv://mauroincaurgarat:coderpass@codercluster.cr5kfef.mongodb.net/?retryWrites=true&w=majority&appName=CoderCluster
+        GITHUB_CLIENT_ID = Iv1.09baa0d561cedc01
+        GITHUB_CLIENT_SECRET = 8572c158375adebd8d6ce1ff7a3fd444e60a6592
+        SESSION_SECRET = adasd127812be
+
+
+   
+                                         
                                           FILTROS 
 
     Paginacion                                      Limites                                         
