@@ -26,4 +26,3 @@ router.put('/:pId',withProductController( (productController, req,res)=> product
 router.delete('/:pId', withProductController( (productController, req,res)=> productController.deleteProductById(req, res)))
 
 module.exports = router
-

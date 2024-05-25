@@ -51,8 +51,6 @@ app.use('/api/sessions', sessionRouter)
         //ROUTERS HTML
 app.use('/', viewsRouter);
 
-
-
         //SERVIDOR
 const main = async () => { 
     //conecto a MONGO ATLAS

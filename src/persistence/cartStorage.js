@@ -20,9 +20,7 @@ class cartStorage {
     }
 
     async addProductToCart(ProductId, CartId){
-
-        console.log(ProductId, CartId)
-        //DEJARON DE FUNCIONAR CORRECTAMENTE ?¡?¡?¡
+ 
         await CartModel.updateOne(
             {//Filtros
                 _id: CartId,
@@ -31,8 +29,7 @@ class cartStorage {
             {//Modificacion
                 $addToSet: // Operador si no existe lo agrega
                 {products : { product: ProductId, quantity : 0 }}
-            })   
-
+        })   
           
         await CartModel.updateOne(
             { //Filtro
@@ -41,9 +38,7 @@ class cartStorage {
             },//Modificacion 
             {   
                 $inc : {"products.$.quantity":1}
-            })
-       
-        
+        }) 
     }
 
     async findProductInCart(pId){
@@ -71,9 +66,7 @@ class cartStorage {
             },
             {   //Elimino el objeto que compla con estas condiciones
                 $unset : {products: []}
-            }
-        )
-
+            })
     }
 
     async upDateCart(cId, productArray){
