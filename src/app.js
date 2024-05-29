@@ -3,9 +3,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
 
-const { productStorage } = require('./persistence/productStorage')
-const { cartStorage } = require('./persistence/cartStorage')
-const { UserStorage} = require('./persistence/userStorage')
+const { productStorage } = require(`${__dirname}/persistence/productStorage`)
+const { cartStorage } = require(`${__dirname}/persistence/cartStorage`)
+const { UserStorage} = require(`${__dirname}/persistence/userStorage`)
 
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
@@ -15,6 +15,11 @@ const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
 const {dbName, mongoUrl} = require(`${__dirname}/config/db.config.js`)
 const initializeStrategy = require(`${__dirname}/config/passport-local.config.js`)
 const initializeGitHubStrategy = require(`${__dirname}/config/passport-github.config.js`)
+const dotenv = require('dotenv')
+
+dotenv.config({
+    path: '.env'
+})
 
         //CONFIGURACIONES
 const app = express()
@@ -51,13 +56,15 @@ app.use('/api/sessions', sessionRouter)
         //ROUTERS HTML
 app.use('/', viewsRouter);
 
+
+const port = process.env.PORT || 8080
         //SERVIDOR
 const main = async () => { 
     //conecto a MONGO ATLAS
     await mongoose.connect(mongoUrl, {dbName: dbName })
         .then(()=>{
                 
-                app.listen(8080, ()=>{
+                app.listen(port, ()=>{
                         console.log(' Servidor Listo !') 
                         
                 })   

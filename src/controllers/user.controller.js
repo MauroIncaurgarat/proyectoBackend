@@ -1,3 +1,5 @@
+const {currentResponse} = require (`../dto/responses/current.response`)
+
 class UserController{
 
     constructor(userService, cartService){
@@ -96,7 +98,7 @@ class UserController{
                 return res.status(400).json({error: 'Invalid credentials'})
             }
     
-            //1. Verificar que el usuario no exista en la BD
+            //Verificar que el usuario no exista en la BD
             const user = await this.userService.find(email)
            
             if(!user){
@@ -131,7 +133,8 @@ class UserController{
                 console.log('Dont exist user')
                 res.redirect('/login')
             }
-            res.send({'Usuario Actual': currentUser})
+
+            res.send( new currentResponse(currentUser))
     
         }catch(err){
             return this.#handleError(err)

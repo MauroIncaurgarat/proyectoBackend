@@ -96,7 +96,7 @@ class cartStorage {
             {   //Seteo nueva cantidad     
                 $set : {"products.$.quantity":newQuantity}
             })
-
     }
+   
 }
 module.exports = { cartStorage }

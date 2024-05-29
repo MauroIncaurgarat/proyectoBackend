@@ -15,7 +15,6 @@ const withCartController = callback => {
         const cartService = new CartService(
           req.app.get('cart.storage')
         )
-        
         const cartController = new CartController(cartService,productService)
         return callback(cartController, req, res)
     }
@@ -33,5 +32,15 @@ router.delete('/:cId', withCartController((cartController, req, res) => cartCont
 router.put('/:cId', withCartController((cartController, req, res) => cartController.upDateCart(req,res)))
 router.put('/:cId/products/:pId',withCartController((cartController, req, res) => cartController.changeQuantity(req,res)))
 
+//GET
+router.get('/:cId/purchase', withCartController((cartController, req, res) => cartController.purchase(req,res)))
+
+
 module.exports = router
 
+/*
+modle.exports = async () => { 
+    
+    return router
+}
+*/

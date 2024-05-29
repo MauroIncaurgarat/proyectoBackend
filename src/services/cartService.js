@@ -7,16 +7,17 @@ class CartService {
     async createCart(){
         return await this.storage.createCart()
     }
+    
     async getCartById(id){   
         return await this.storage.getCartById(id)
     }
+
     async getCartPopulateById(id){
         return await this.storage.getCartPopulateById(id)
     }
+
     async addProductToCart(ProductId, CartId){
-        
-        await this.storage.addProductToCart(ProductId, CartId)
-        
+        await this.storage.addProductToCart(ProductId, CartId)  
     }
 
     async deleteProductToCart (pId, cId){
@@ -48,6 +49,23 @@ class CartService {
             throw new Error("No existe el producto en el carro")
         }
     }
+    
+    async getProductInCart(id){
+        
+        const Cart = await this.storage.getCartById(id)
+        const productInCart = Cart[0].products
+        /*
+        if(productInCart.length == 0){
+          return res.status(404).json('Error')
+        }
+        */
+
+        return productInCart.map(u => u.toObject({virtuals: true}))
+       
+    }
+
+
+
 }
 
 module.exports = { CartService }

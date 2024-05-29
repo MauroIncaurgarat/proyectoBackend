@@ -35,7 +35,7 @@ router.get('/failregister', (_,res) => {res.send('Error registering user!')})
 
 router.get('/logout', withUserController( (userController, req,res)=> userController.logOut(req, res)))
 
-router.get('/current', withUserController( (userController, req,res)=> userController.CurrentUse(req, res)))
+router.get('/current', withUserController( (userController, req,res)=> userController.CurrentUser(req, res)))
 //GitHub
 router.get('/github', passport.authenticate('github',{scope:['user:email']}), (req,res) => {})
 

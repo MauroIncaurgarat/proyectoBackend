@@ -5,7 +5,7 @@ class CartController {
         this.productService = productService
     }
     #handleError(res,err) {
-       
+        
         if(err.message === 'not found') {
             return res.status(404).json({error: 'Not found'})
         }
@@ -20,7 +20,6 @@ class CartController {
 
     async addCart (_,res){
         try{
-
             await this.cartService.createCart()
             res.status(200).json('Se Creo Carrito !')
 
@@ -61,12 +60,14 @@ class CartController {
             //Busco el Carro y verifico existencia Carro ID
             const cartId = await this.cartService.getCartById(req.params.cId)
 
-            //Sumar Producto SI NO EXISTE 
+            //Sumar Producto 
             await this.cartService.addProductToCart(req.params.pId, cartId)
         
             res.status(200).json('Carrito Actualizado!')
+            
         }catch(err){
-            return console.log(err)
+
+            return this.#handleError(err)
         }
     }
 
@@ -91,7 +92,7 @@ class CartController {
         try{
             //Busco el Carro y verifico existencia Carro ID
             await this.cartService.getCartById(req.params.cId)
-            console.log(req.params.cId)
+           
             //Eliminar el Producto al Carro
             await this.cartService.cleanCart(req.params.cId)
 
@@ -110,7 +111,7 @@ class CartController {
 
             return res.status(200).json(`Carrito ${req.params.cId} actualizado`)
 
-        }catch{
+        }catch(err){
             return this.#handleError(err)
         }
     }
@@ -130,9 +131,52 @@ class CartController {
             return res.status(200).json("Cantidad Modificada!")
  
         }catch(err){
-            throw new Error(err)
+            return this.#handleError(err)
         }
     }
+
+    async purchase(req,res){
+        try{ 
+            const Cartid = req.params.cId
+            //Acumuladores
+            let accSeller = []
+            let accDontSeller = []
+
+            //Obtengo los productos
+            const productInCart = await this.cartService.getProductInCart(Cartid)
+        
+            //Verifico Stock
+            for(let i=0; i < productInCart.length; i++){
+                
+                const productInStorage = await this.productService.getProductById(productInCart[i].id)
+               
+                if(productInCart[i].quantity <= productInStorage[0].stock && productInCart[i].quantity > 0){
+
+                    accSeller.push(productInCart[i])
+
+                }else if(productInCart[i].quantity > 0){
+                    accDontSeller.push(productInCart[i])
+                }
+
+            }
+
+            //Bajar Stock productos vendidos
+
+
+            //Sacar del carrito productos vendidos
+
+
+            
+
+            return res.json({"Pude Comprar" : accSeller, "No pude comprar" : accDontSeller})
+
+        }catch(err){
+           console.log(err)
+        }
+            
+    }
+
+
 }
 
 module.exports = { CartController }
