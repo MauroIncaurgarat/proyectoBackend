@@ -10,6 +10,11 @@ class UserStorage {
         return UserModel.findOne({email})
     }
 
+    async findUserCartId(cId){
+        console.log("ola")
+        return await UserModel.findOne({cartId : cId})
+    }
+
     async findOneUser(idFromSession){
         return await UserModel.findOne({_id: idFromSession})
     }

@@ -20,17 +20,17 @@ class CartService {
         await this.storage.addProductToCart(ProductId, CartId)  
     }
 
-    async deleteProductToCart (pId, cId){
+    async deleteProductToCart(pId, cId){
     
         //Eliminar Producto
-        const existProduct = await this.storage.findProductInCart(pId)
+        //const existProduct = await this.storage.findProductInCart(pId)
                 
-        if(!existProduct){ 
-            throw new Error("No existe el producto en el carro")
-        }
+        //if(!existProduct){ 
+          //  throw new Error("No existe el producto en el carro")
+        //}
         
         //Eliminar producto del carrito
-        await this.storage.deleteProductInCart(cId, pId)
+        await this.storage.deleteProductInCart(pId, cId)
 
     }
 

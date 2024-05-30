@@ -23,6 +23,13 @@ class ProductService {
     async upDateProduct(id, campos){
         return await this.storage.upDateProduct(id, campos)
     }
+
+    async reduceStock(pId,unitsSold){
+
+        await this.storage.reduceStock(pId,unitsSold)
+
+    }
+
     //Paginate
     async getPage(pagequery){
         

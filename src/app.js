@@ -6,6 +6,7 @@ const passport = require('passport')
 const { productStorage } = require(`${__dirname}/persistence/productStorage`)
 const { cartStorage } = require(`${__dirname}/persistence/cartStorage`)
 const { UserStorage} = require(`${__dirname}/persistence/userStorage`)
+const { TicketStorage} = require(`${__dirname}/persistence/ticketStorage`)
 
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
@@ -48,6 +49,8 @@ app.use(express.static(`${__dirname}/../public`))
 app.set('product.storage', new productStorage())
 app.set('cart.storage', new cartStorage())
 app.set('user.storage', new UserStorage())
+app.set('ticket.storage', new TicketStorage())
+
         //ROUTERS API
 app.use('/api/product', productRouter) //Router Productos
 app.use('/api/cart', cartRouter) //Router Productos

@@ -32,5 +32,8 @@ const schema = new mongoose.Schema({
         //Se cargaran los Id de los usuarios
     }
 })
+schema.virtual('id').get(function(){
+    return this._id.toString()
+})
 
 module.exports = mongoose.model('User', schema, 'users')

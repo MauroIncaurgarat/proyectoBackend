@@ -47,7 +47,8 @@ class cartStorage {
         })
     }
 
-    async deleteProductInCart(cId, pId){
+    async deleteProductInCart(pId, cId){
+
         await CartModel.updateOne(
             { //Filtro
                 _id: cId, 
@@ -88,6 +89,7 @@ class cartStorage {
     }
 
     async changeCuantity(cId,pId,newQuantity){
+      
         await CartModel.updateOne(
             { //Filtro
                 _id: cId, //Coincide el ID de Carro
@@ -97,6 +99,8 @@ class cartStorage {
                 $set : {"products.$.quantity":newQuantity}
             })
     }
-   
+    
+
+
 }
 module.exports = { cartStorage }

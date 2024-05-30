@@ -40,9 +40,9 @@ class UserController{
             const email = req.user.email
             //Le creamos un carro
             const newCart = await this.cartService.createCart()
-      
+            
             //inserto al User
-            await this.userService.setCartId(email,newCart.id)
+            await this.userService.setCartId(email,newCart.id.toString())
             
             console.log('Se registro usuario!', req.user, ' Y su CartId es', newCart.id)
 

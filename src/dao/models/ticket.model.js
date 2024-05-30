@@ -15,11 +15,11 @@ const schema = new mongoose.Schema({
         required: true
     },
     purchaser: {
-        //contiene el correo del usuario asociado al carrito
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User' //Nombre del modelo
-        //Se cargaran los Id de los usuarios
+        type:String
     }
+})
+schema.virtual('id').get(function(){
+    return this._id.toString()
 })
 
 module.exports = mongoose.model('Tickets', schema, 'tickets')

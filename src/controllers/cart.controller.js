@@ -135,48 +135,6 @@ class CartController {
         }
     }
 
-    async purchase(req,res){
-        try{ 
-            const Cartid = req.params.cId
-            //Acumuladores
-            let accSeller = []
-            let accDontSeller = []
-
-            //Obtengo los productos
-            const productInCart = await this.cartService.getProductInCart(Cartid)
-        
-            //Verifico Stock
-            for(let i=0; i < productInCart.length; i++){
-                
-                const productInStorage = await this.productService.getProductById(productInCart[i].id)
-               
-                if(productInCart[i].quantity <= productInStorage[0].stock && productInCart[i].quantity > 0){
-
-                    accSeller.push(productInCart[i])
-
-                }else if(productInCart[i].quantity > 0){
-                    accDontSeller.push(productInCart[i])
-                }
-
-            }
-
-            //Bajar Stock productos vendidos
-
-
-            //Sacar del carrito productos vendidos
-
-
-            
-
-            return res.json({"Pude Comprar" : accSeller, "No pude comprar" : accDontSeller})
-
-        }catch(err){
-           console.log(err)
-        }
-            
-    }
-
-
 }
 
 module.exports = { CartController }

@@ -69,7 +69,17 @@ class productStorage {
             }
         ]) 
     }
+    
+    async reduceStock(pId, unitsSold){
 
+        await ProductModel.updateOne(
+            { //Filtro
+                _id : pId, 
+            },
+            {   //Disminuyo Stock
+                $inc : {stock : -unitsSold}
+            })
+    }
   
 
 }
