@@ -18,7 +18,7 @@ class CartController {
 
     }
 
-    async addCart (_,res){
+    async createCart(_,res){
         try{
             await this.cartService.createCart()
             res.status(200).json('Se Creo Carrito !')

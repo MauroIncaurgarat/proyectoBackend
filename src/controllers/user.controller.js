@@ -78,9 +78,10 @@ class UserController{
     
         try{                
             //Crear nueva sesion si el susuario existe
-            
+            //if(req.user.email == emailAdmin && req.user.password == )
+
             //req.user inyecta passport
-            req.session.user = { email: req.user.email, _id: req.user._id }
+            req.session.user = { email: req.user.email, _id: req.user._id, role: req.user.role }
             
             //Una vez ingresado vamos a la vista de productos
             res.redirect('/products')
@@ -116,7 +117,7 @@ class UserController{
     async logOut(req, res) {
         
         try { 
-            req.session.destroy(__ => {
+                req.session.destroy(__ => {
                 res.redirect('/')
             })
         }catch(err){

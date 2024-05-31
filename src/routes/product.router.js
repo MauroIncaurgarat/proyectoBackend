@@ -1,6 +1,11 @@
                                         //API/PRODUCT
 const {Router} = require('express')
 const router = Router()
+
+//MIDDLEWARES
+const {userIsLoggedIn} = require(`${__dirname}/../middlewares/auth.middleware.js`)
+const {roleAdmin} = require(`${__dirname}/../middlewares/rule.middleware.js`)
+//CONTROLLERS
 const { ProductController } = require(`../controllers/product.controller`)
 const { ProductService } = require(`../services/productService`)
 
@@ -19,10 +24,10 @@ const withProductController = callback => {
 router.get('/', withProductController( (productController, req,res)=> productController.filterProduct(req, res)))
 router.get('/:pId', withProductController( (productController, req,res)=> productController.getProductById(req, res)))
 //POST
-router.post('/', withProductController( (productController, req,res)=> productController.addProduct(req, res)))
+router.post('/',userIsLoggedIn, roleAdmin, withProductController( (productController, req,res)=> productController.addProduct(req, res)))
 //PUT
-router.put('/:pId',withProductController( (productController, req,res)=> productController.upDateProduct(req,res)))
+router.put('/:pId',userIsLoggedIn, roleAdmin, withProductController( (productController, req,res)=> productController.upDateProduct(req,res)))
 //DELETE
-router.delete('/:pId', withProductController( (productController, req,res)=> productController.deleteProductById(req, res)))
+router.delete('/:pId',userIsLoggedIn, roleAdmin, withProductController( (productController, req,res)=> productController.deleteProductById(req, res)))
 
 module.exports = router

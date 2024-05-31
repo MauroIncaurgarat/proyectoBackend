@@ -100,7 +100,5 @@ class cartStorage {
             })
     }
     
-
-
 }
 module.exports = { cartStorage }
