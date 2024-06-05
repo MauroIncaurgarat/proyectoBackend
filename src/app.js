@@ -2,16 +2,18 @@ const handlebars = require('express-handlebars')
 const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
-
+//import Persistance
 const { productStorage } = require(`${__dirname}/persistence/productStorage`)
 const { cartStorage } = require(`${__dirname}/persistence/cartStorage`)
 const { UserStorage} = require(`${__dirname}/persistence/userStorage`)
 const { TicketStorage} = require(`${__dirname}/persistence/ticketStorage`)
-
+//Import Router
 const productRouter = require(`${__dirname}/routes/product.router.js`)
 const cartRouter = require(`${__dirname}/routes/carts.router.js`)
 const viewsRouter = require(`${__dirname}/routes/views.router.js`)
 const sessionRouter = require(`${__dirname}/routes/session.router.js`)
+const mockingRouter = require(`${__dirname}/routes/mocking.router.js`)
+
 const sessionMiddleware = require(`${__dirname}/session/mongoStorage.js`)
 const {dbName, mongoUrl} = require(`${__dirname}/config/db.config.js`)
 const initializeStrategy = require(`${__dirname}/config/passport-local.config.js`)
@@ -22,7 +24,6 @@ dotenv.config({
     path: '.env'
 })
 
-        //CONFIGURACIONES
 const app = express()
 
 //configurar handlebars
@@ -51,17 +52,18 @@ app.set('cart.storage', new cartStorage())
 app.set('user.storage', new UserStorage())
 app.set('ticket.storage', new TicketStorage())
 
-        //ROUTERS API
+//ROUTERS API
 app.use('/api/product', productRouter) //Router Productos
 app.use('/api/cart', cartRouter) //Router Productos
 app.use('/api/sessions', sessionRouter)
+app.use('/api/mockingproduct', mockingRouter)
 
-        //ROUTERS HTML
+//ROUTERS HTML
 app.use('/', viewsRouter);
 
-
+//SERVIDOR
 const port = process.env.PORT || 8080
-        //SERVIDOR
+
 const main = async () => { 
     //conecto a MONGO ATLAS
     await mongoose.connect(mongoUrl, {dbName: dbName })

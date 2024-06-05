@@ -22,12 +22,7 @@ class ProductController {
     //Agregar Productos
     async addProduct(req, res) {
         try{  
-            const title = req.body.title
-            const description = req.body.description 
-            const price = +req.body.price 
-            const thumbnail = req.body.thumbnail 
-            const code = req.body.code 
-            const stock = +req.body.stock 
+            
 
             //Number Check
             if(isNaN(price)) {         

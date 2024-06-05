@@ -13,7 +13,7 @@ class ProductService {
     }
 
     async create(title,code,description,price,stock,thumbnail){
-        this.storage.create(title,code,description,price,stock,thumbnail)
+        await this.storage.create(title,code,description,price,stock,thumbnail)
     }
 
     async deleteById (id){
