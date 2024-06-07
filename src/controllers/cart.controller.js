@@ -99,7 +99,7 @@ class CartController {
             return res.status(200).json('Cart clean')
 
         }catch(err){
-            return console.log(err)
+            return this.#handleError(err)
         }
     }
 

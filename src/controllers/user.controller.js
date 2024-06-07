@@ -110,7 +110,7 @@ class UserController{
         
             res.redirect('/')
         }catch(err){
-            return console.log(err) 
+            return this.#handleError(err)
         }
     }
     

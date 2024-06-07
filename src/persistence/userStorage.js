@@ -11,7 +11,7 @@ class UserStorage {
     }
 
     async findUserCartId(cId){
-        console.log("ola")
+    
         return await UserModel.findOne({cartId : cId})
     }
 

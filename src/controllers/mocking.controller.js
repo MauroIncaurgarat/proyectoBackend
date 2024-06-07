@@ -47,7 +47,7 @@ class MockingController {
             res.status(200).json({mockProducts})
     
         }catch(err){
-            return console.log(err)
+            return this.#handleError(err)
         }               
     }
 

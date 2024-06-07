@@ -1,4 +1,5 @@
 const handlebars = require('express-handlebars')
+const {ErrorHandler} = require('./middlewares/error.middleware')
 const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
@@ -59,10 +60,13 @@ app.use('/api/sessions', sessionRouter)
 app.use('/api/mockingproduct', mockingRouter)
 
 //ROUTERS HTML
-app.use('/', viewsRouter);
+app.use('/', viewsRouter)
+
+app.use(ErrorHandler)
 
 //SERVIDOR
 const port = process.env.PORT || 8080
+
 
 const main = async () => { 
     //conecto a MONGO ATLAS

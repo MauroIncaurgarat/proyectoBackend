@@ -24,7 +24,7 @@ const withProductController = callback => {
 router.get('/', withProductController( (productController, req,res)=> productController.filterProduct(req, res)))
 router.get('/:pId', withProductController( (productController, req,res)=> productController.getProductById(req, res)))
 //POST
-router.post('/',userIsLoggedIn, roleAdmin, withProductController( (productController, req,res)=> productController.addProduct(req, res)))
+router.post('/',/*userIsLoggedIn, roleAdmin,*/ withProductController( (productController, req,res)=> productController.addProduct(req, res)))
 //PUT
 router.put('/:pId',userIsLoggedIn, roleAdmin, withProductController( (productController, req,res)=> productController.upDateProduct(req,res)))
 //DELETE

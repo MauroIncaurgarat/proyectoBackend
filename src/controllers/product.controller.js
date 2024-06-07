@@ -1,3 +1,6 @@
+const { CustomError } = require("../utils/CustomError")
+const { ErrorCodes } = require("../utils/errorCodes") 
+const {generateInvalidProductDataError} = require("../utils/errorCause/ErrorCauseProduct")
 
 class ProductController {   
 
@@ -5,7 +8,7 @@ class ProductController {
         this.service = service
     }
     
-    #handleError(res,err) {
+    #handleError(err, res) {
        
         if(err.message === 'not found') {
             return res.status(404).json({error: 'Not found'})
@@ -21,30 +24,53 @@ class ProductController {
 
     //Agregar Productos
     async addProduct(req, res) {
-        try{  
-            
+       
+        const title = req.body.title
+        const description = req.body.description 
+        const price = +req.body.price 
+        const thumbnail = req.body.thumbnail 
+        const code = req.body.code 
+        const stock = +req.body.stock 
 
-            //Number Check
-            if(isNaN(price)) {         
-                throw new Error("Price must be a number")           
-            }else if(isNaN(stock)){       
-                throw new Error("Stock must be a number")
-            }       
-            
-            //Falto un campo
-            if(!title || !description || !price  || !thumbnail || !stock){       
-                throw new Error( `Falta un Campo`)
-            }        
+        //Number Check
+        if(isNaN(price)) {         
            
+            throw CustomError.createError({
+                name: 'InvalidProductData',
+                cause: generateInvalidProductDataError({title, description, price,thumbnail, stock }),
+                message: 'Error trying to create Product',
+                code: ErrorCodes.INVALID_INPUT_DATA
+            })           
+
+        }else if(isNaN(stock)){       
             
-            //creamos usuario 
-            await this.service.create(title,code,description,price,stock,thumbnail)
-            
-            res.status(200).json('Producto enviado')
+            throw CustomError.createError({
+                name: 'InvalidProductData',
+                cause: generateInvalidProductDataError({title, description, price,thumbnail, stock }),
+                message: 'Error trying to create Product',
+                code: ErrorCodes.INVALID_INPUT_DATA
+            })  
+        
+        }       
+        
+        //Falto un campo
+        if(!title || !description || !price  || !thumbnail || !stock){    
+          
+            throw CustomError.createError({
+                name: 'InvalidProductData',
+                cause: generateInvalidProductDataError({title, description, price,thumbnail, stock }),
+                message: 'Error trying to create Product',
+                code: ErrorCodes.INVALID_INPUT_DATA
+            })  
+        }        
+        
+        
+        //creamos usuario 
+        await this.service.create(title,code,description,price,stock,thumbnail)
+        
+        res.status(200).json('Producto enviado')
     
-        }catch(err){
-            return this.#handleError(err)
-        }               
+             
     }
     //Leer Productos
     async getProduct(){
