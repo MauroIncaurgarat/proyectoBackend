@@ -30,6 +30,8 @@ const withViewController = callback => {
     }
 }
 
+router.get('/loggerTest',withViewController((viewController, req,res)=>viewController.testLogger(req,res)))
+
 //GET
 router.get('/', withViewController((viewController, req,res)=>viewController.renderHome(req,res)))
 

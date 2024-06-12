@@ -21,8 +21,18 @@ class ViewController{
 
     }
 
+    async testLogger(req,res) {
+        try{ 
+            req.logger.fatal('fatal')
+            res.send('testeando logger')
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     async renderHome(req, res){
         try{   
+            
             const isLoggedIn = ![null, undefined].includes(req.session.user)
     
             res.render('index',{

@@ -3,6 +3,7 @@ const {ErrorHandler} = require('./middlewares/error.middleware')
 const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
+const { useLogger } = require('./utils/logs/logger')
 //import Persistance
 const { productStorage } = require(`${__dirname}/persistence/productStorage`)
 const { cartStorage } = require(`${__dirname}/persistence/cartStorage`)
@@ -27,6 +28,7 @@ dotenv.config({
 
 const app = express()
 
+
 //configurar handlebars
 app.engine('handlebars', handlebars.engine()) //Express utilice el motor handelbars
 app.set('views', `${__dirname}/views`) //Donde estan las vistas ?
@@ -37,6 +39,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use(sessionMiddleware)
+app.use( useLogger )
 
 //Conectar Passport con nuestra aplicacion
 initializeStrategy()
