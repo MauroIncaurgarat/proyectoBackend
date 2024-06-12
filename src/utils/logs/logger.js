@@ -5,7 +5,6 @@ dotenv.config({
     path: './../../.env'
 })
 
-
 const customLevelsOptions = {
     levels : {
         fatal: 0,
@@ -22,7 +21,7 @@ const devLogger = winston.createLogger({
     levels: customLevelsOptions.levels,
     
     transport: [
-        new winston.transports.Console({level: 'fatal'}),
+        new winston.transports.Console({level: 'debug'}),
     ]
 
 })
@@ -38,9 +37,13 @@ const prodLogger = winston.createLogger({
     
 })
 
-const logger = process.env.NODE_ENV === 'production'
+
+
+
+const logger = process.env.NODE_ENV === 'developer'
     ? prodLogger
     : devLogger
+
 
 /**
  * @type {import('express').RequestHandler}

@@ -23,8 +23,11 @@ class ViewController{
 
     async testLogger(req,res) {
         try{ 
-            req.logger.fatal('fatal')
-            res.send('testeando logger')
+            //Estoy en production, no deberia mandarlo a la consola
+            req.logger.debug('debug')
+
+            res.send('testeando logger Production / Level info de consola ')
+
         }catch(err){
             console.log(err)
         }
