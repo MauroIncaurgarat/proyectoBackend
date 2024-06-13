@@ -38,8 +38,6 @@ const prodLogger = winston.createLogger({
 })
 
 
-
-
 const logger = process.env.NODE_ENV === 'developer'
     ? prodLogger
     : devLogger
