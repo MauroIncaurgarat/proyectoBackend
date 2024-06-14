@@ -29,6 +29,7 @@ dotenv.config({
 })
 
 const app = express()
+
 app.use( useLogger )
 
 //configurar handlebars
@@ -65,6 +66,7 @@ app.use('/api/mockingproduct', mockingRouter)
 
 //ROUTERS HTML
 app.use('/', viewsRouter)
+
 
 app.use(ErrorHandler)
 

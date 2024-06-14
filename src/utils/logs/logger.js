@@ -16,16 +16,6 @@ const customLevelsOptions = {
     }
 }
 
-const devLogger = winston.createLogger({
-
-    levels: customLevelsOptions.levels,
-    
-    transport: [
-        new winston.transports.Console({level: 'debug'}),
-    ]
-
-})
-
 const prodLogger = winston.createLogger({
     
     levels: customLevelsOptions.levels,
@@ -37,8 +27,17 @@ const prodLogger = winston.createLogger({
     
 })
 
+const devLogger = winston.createLogger({
 
-const logger = process.env.NODE_ENV === 'developer'
+    levels: customLevelsOptions.levels,
+    
+    transport: [
+        new winston.transports.Console({level: 'debug'}),
+    ]
+
+})
+
+const logger = process.env.NODE_ENV === 'production'
     ? prodLogger
     : devLogger
 
@@ -47,7 +46,7 @@ const logger = process.env.NODE_ENV === 'developer'
  * @type {import('express').RequestHandler}
  */
 
-const useLogger = (req, res, next) => {
+const useLogger = (req, __ , next) => {
     req.logger = logger
     req.logger.http(`Request al endpoint: ${req.url}`)
     next();
