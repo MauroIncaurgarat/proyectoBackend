@@ -22,7 +22,7 @@ const prodLogger = winston.createLogger({
 
     transport: [
         new winston.transports.Console({level: 'info'}),
-        new winston.transports.File({level: 'error', filename: `./../../logs/app.log` })
+        new winston.transports.File({level: 'error', filename: `./../../logsarchive/app.log` })
     ]
     
 })
